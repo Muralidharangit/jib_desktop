@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/red_icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon.png" />
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <title>Jiboomba</title>
+
+    <!-- Link styles -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/style.css" />
+    <!-- <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/style1.css" /> -->
+    <!-- <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/style2.css" /> -->
+    <!-- <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/style3.css"  /> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+      <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/css/materialdesignicons.min.css"
+    integrity="sha512-/k658G6UsCvbkGRB3vPXpsPHgWeduJwiWGPCGS14IQw3xpr63AEMdA8nMYG2gmYkXitQxDTn6iiK/2fD4T87qA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+     <link href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons/css/all/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/swiper.css" />
+
+    <!-- Icon style -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/font/remixicon.css" />
+    <!-- Link styles end -->
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+
+    <!-- JS files -->
+    <script src="%PUBLIC_URL%/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="%PUBLIC_URL%/assets/js/swiper.js"></script>
+    <script src="%PUBLIC_URL%/assets/js/main.js"></script>
+
+    <script>
+      // Swiper JS Initialization
+      // document.addEventListener("DOMContentLoaded", function () {
+      //   const swiper = new Swiper(".mySwiper", {
+      //     spaceBetween: 30,
+      //     autoplay: {
+      //       delay: 3000,
+      //       disableOnInteraction: false,
+      //     },
+      //     scrollbar: {
+      //       hide: true,
+      //     },
+      //   });
+      // });
+
+      // Offcanvas Handling
+      const offcanvasStack = [];
+      document.querySelectorAll(".offcanvas").forEach((offcanvas) => {
+        offcanvas.addEventListener("show.bs.offcanvas", (event) => {
+          const activeOffcanvas = document.querySelector(".offcanvas.show");
+          if (activeOffcanvas && offcanvas.id !== "Profile_offcanvas") {
+            offcanvasStack.push(activeOffcanvas.id);
+          }
+        });
+
+        offcanvas.addEventListener("hidden.bs.offcanvas", (event) => {
+          if (offcanvas.id === "menuOffcanva") {
+            document
+              .querySelectorAll(".offcanvas.show")
+              .forEach((openOffcanvas) => {
+                const bootstrapOffcanvas =
+                  bootstrap.Offcanvas.getInstance(openOffcanvas);
+                if (bootstrapOffcanvas) bootstrapOffcanvas.hide();
+              });
+            offcanvasStack.length = 0;
+            resetBodyStyles();
+          } else if (offcanvas.id === "Profile_offcanvas") {
+            offcanvasStack.length = 0;
+            resetBodyStyles();
+          } else {
+            if (offcanvasStack.length > 0) {
+              const previousOffcanvasId = offcanvasStack.pop();
+              const previousOffcanvas =
+                document.getElementById(previousOffcanvasId);
+              if (previousOffcanvas) {
+                const bootstrapOffcanvas = new bootstrap.Offcanvas(
+                  previousOffcanvas
+                );
+                bootstrapOffcanvas.show();
+              }
+            } else {
+              const profileOffcanvas =
+                document.getElementById("Profile_offcanvas");
+              if (profileOffcanvas) {
+                const bootstrapOffcanvas = new bootstrap.Offcanvas(
+                  profileOffcanvas
+                );
+                bootstrapOffcanvas.show();
+              }
+            }
+          }
+        });
+      });
+
+      function resetBodyStyles() {
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
+      }
+
+      // Read More Functionality
+      function toggleText(event) {
+        const button = event.target;
+        const cardBody = button.closest(".card-body");
+        const content = cardBody.querySelector(".content");
+
+        if (content.style.maxHeight === "3.9rem") {
+          content.style.maxHeight = "none";
+          button.textContent = "Show Less";
+        } else {
+          content.style.maxHeight = "3.9rem";
+          button.textContent = "Read More";
+        }
+      }
+
+      // Password Toggle
+      document.querySelectorAll(".togglePassword").forEach((toggleIcon) => {
+        toggleIcon.addEventListener("click", function () {
+          const passwordField = this.previousElementSibling;
+          passwordField.type =
+            passwordField.type === "password" ? "text" : "password";
+          this.classList.toggle("ri-eye-off-line");
+          this.classList.toggle("ri-eye-line");
+        });
+      });
+
+      // Copy to Clipboard
+      document.addEventListener("DOMContentLoaded", () => {
+        const copyInput = document.getElementById("copyInput");
+        const copyButton = document.getElementById("copyButton");
+
+        if (copyButton) {
+          copyButton.addEventListener("click", () => {
+            copyInput.select();
+            copyInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyInput.value).then(() => {
+              alert("Copied to clipboard: " + copyInput.value);
+            });
+          });
+        }
+      });
+
+      // Image Upload Filename Display
+      document.addEventListener("DOMContentLoaded", () => {
+        const fileInput = document.getElementById("formFile");
+        if (fileInput) {
+          fileInput.addEventListener("change", function () {
+            const fileName = this.files[0]?.name || "No file chosen";
+            this.nextElementSibling.querySelector(".file-name").textContent =
+              fileName;
+          });
+        }
+      });
+
+      // Active Button Toggle
+      document.addEventListener("DOMContentLoaded", () => {
+        const depositButton = document.getElementById("depositButton");
+        const withdrawButton = document.getElementById("withdrawButton");
+
+        function setActiveButton(activeButton) {
+          depositButton?.classList.remove("btn_active");
+          withdrawButton?.classList.remove("btn_active");
+          activeButton.classList.add("btn_active");
+        }
+
+        depositButton?.addEventListener("click", () =>
+          setActiveButton(depositButton)
+        );
+        withdrawButton?.addEventListener("click", () =>
+          setActiveButton(withdrawButton)
+        );
+      });
+
+      // Sticky Header
+      // document.addEventListener("DOMContentLoaded", () => {
+      //   const header = document.querySelector(".page-header");
+      //   const toggleClass = "is-sticky";
+
+      //   window.addEventListener("scroll", () => {
+      //     window.pageYOffset > 150 ? header.classList.add(toggleClass) : header.classList.remove(toggleClass);
+      //   });
+      // });
+    </script>
+
+    
+  </body>
+</html>
