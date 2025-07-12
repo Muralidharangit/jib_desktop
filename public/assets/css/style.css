@@ -436,6 +436,7 @@ button.btn.btn-index {
   }
   .unique-footer ul li a p {
     font-size: 13px;
+    margin-bottom: 0;
   }
 
   .unique-footer ul li img {
@@ -2150,9 +2151,13 @@ li.nav-item button {
 }
 
 .navbar .navbar-brand-wrapper .navbar-brand.brand-logo-mini img {
-  width: calc(70px - 50px);
+  /* width: calc(70px - 50px);
   max-width: 100%;
   height: 28px;
+  margin: auto; */
+  width: calc(73px - 12px);
+  max-width: 100%;
+  height: 37px;
   margin: auto;
 }
 
@@ -2167,7 +2172,9 @@ li.nav-item button {
   width: calc(100% - 260px);
   height: 70px;
 }
-
+.sidebar-icon-only .min-menunone {
+  display: none;
+}
 @media (max-width: 991px) {
   .navbar .navbar-menu-wrapper {
     width: auto;
@@ -3461,7 +3468,7 @@ li.nav-item button {
   -webkit-flex-grow: 1;
   flex-grow: 1;
   /* background: #000; */
-  height:100%;
+  height: 100%;
 }
 
 .right-sidebar-toggler-wrapper {
@@ -5264,10 +5271,8 @@ swiper-container.mySwiper.new_class4 swiper-slide {
   border-radius: 8px;
 }
 
-
-
 .game-card-wrapper.rounded-2.new-cardclr.mt-2:hover .game-card.opacity-100 {
-    opacity: 1 !important;
+  opacity: 1 !important;
 }
 
 .hover-group {
@@ -5278,10 +5283,9 @@ swiper-container.mySwiper.new_class4 swiper-slide {
 .hover-group:hover {
   border: 1px solid #e4063aae; /* Or your desired highlight color */
   border-radius: 12px;
-
 }
 
- .hover-group .btn-play {
+.hover-group .btn-play {
   background: rgba(0, 0, 0, 0.6);
   color: white;
   font-size: 24px;
@@ -5300,13 +5304,9 @@ swiper-container.mySwiper.new_class4 swiper-slide {
   transform: scale(1.1);
 }
 
- .hover-group:hover .game-card{
-   opacity: 0.8;
+.hover-group:hover .game-card {
+  opacity: 0.8;
 }
-
-
-
-
 
 /* Optional: smooth image zoom on hover */
 .hover-group img {
@@ -5318,11 +5318,11 @@ swiper-container.mySwiper.new_class4 swiper-slide {
 }
 
 .col-md-4.col-sm-6.col-4.col-custom-3 {
-    padding: 0 1px;
+  padding: 0 1px;
 }
 
 /* test */
-    /* position: fixed;
+/* position: fixed;
     top: 6vh;
     left: 0px;
     width: 100vw;
@@ -5330,8 +5330,7 @@ swiper-container.mySwiper.new_class4 swiper-slide {
     background-color: rgb(0 0 0 / 0%);
     z-index: 9999; */
 
-
-       /* .iframe-container {
+/* .iframe-container {
       height: calc(100vh - 60px) !important; 
     }
 
@@ -5341,87 +5340,85 @@ swiper-container.mySwiper.new_class4 swiper-slide {
       border: none;
     } */
 
+/* Add to your existing CSS file (e.g., App.css or a dedicated CSS module) */
+@media (max-width: 767px) {
+  .mobile-none {
+    display: none !important;
+  }
 
-    /* Add to your existing CSS file (e.g., App.css or a dedicated CSS module) */
-   @media(max-width:767px){
-    .mobile-none{
-      display:none !important;
-    }
+  .content-wrapper {
+    padding: 0 !important;
+  }
 
-.content-wrapper {
-  padding:0 !important;
-}
-
-.navbar.fixed-top+.page-body-wrapper {
+  .navbar.fixed-top + .page-body-wrapper {
     padding-top: 0px !important;
+  }
 }
 
-   }
+@media (min-width: 768px) {
+  .tabd-none {
+    display: none;
+  }
 
-    @media(min-width:768px) {
-      .tabd-none{
-        display: none ;
-      }
+  .tabd-block {
+  }
+}
 
-      .tabd-block{
-
-      }
-    }
-
-    .navbar .navbar-menu-wrapper .count-indicator .count-symbol,
+.navbar .navbar-menu-wrapper .count-indicator .count-symbol,
 .navbar .navbar-menu-wrapper .count-indicator .count-number {
   border: 2px solid #ffffff;
 }
 
-    .deposit_btn_container {
-    width: fit-content;
-    height: 30px;
-    border-radius: 20px;
-    padding: 5px;
-    box-sizing: content-box;
-    display: flex;
-    align-items: center;
-    background-color: #292524;
-  }
-  
-  
-  .deposit-btn {
-    height: 100%;
-    width: 95px;
-    border: none;
-    border-radius: 15px;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    background-color: #ffffff;
-    font-weight: 500;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: all 0.3s;
-  }
-  
-  .deposit_btn_container:active .icon {
-    transform: scale(1.3);
-  }
-  .deposit-btn:hover {
-    color: grey;
-  }
-  .deposit-btn:hover .arrow {
-    margin-right: 0;
-    animation: jello-vertical 0.9s both;
-    transform-origin: right;
-  }
-  .deposit-btn:active {
-    transform: scale(0.9);
-  }
-  .sidebar .nav:not(.sub-menu)>.nav-item:hover:not(.nav-category):not(.nav-profile)>.nav-link {
-      color: #e4063b;
-  }
- 
+.deposit_btn_container {
+  width: fit-content;
+  height: 30px;
+  border-radius: 20px;
+  padding: 5px;
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  background-color: #292524;
+}
 
-  /* home Style Ends */
+.deposit-btn {
+  height: 100%;
+  width: 95px;
+  border: none;
+  border-radius: 15px;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  background-color: #ffffff;
+  font-weight: 500;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.deposit_btn_container:active .icon {
+  transform: scale(1.3);
+}
+.deposit-btn:hover {
+  color: grey;
+}
+.deposit-btn:hover .arrow {
+  margin-right: 0;
+  animation: jello-vertical 0.9s both;
+  transform-origin: right;
+}
+.deposit-btn:active {
+  transform: scale(0.9);
+}
+.sidebar
+  .nav:not(.sub-menu)
+  > .nav-item:hover:not(.nav-category):not(.nav-profile)
+  > .nav-link {
+  color: #e4063b;
+}
+
+/* home Style Ends */
 .user-icon {
   width: 35px;
   height: 35px;
@@ -5435,12 +5432,8 @@ swiper-container.mySwiper.new_class4 swiper-slide {
   font-size: 25px;
 }
 
-
-
-
-
-.max-1250{
-  max-width:1300px;
+.max-1250 {
+  max-width: 1300px;
 }
 
 .br-top-gray {
@@ -5454,13 +5447,17 @@ nav.sidebar.sidebar-offcanvas.open .min-menunone {
   display: none;
 }
 
-nav.sidebar.sidebar-offcanvas.open .navbar .navbar-brand-wrapper .navbar-brand.brand-logo-mini img{
+nav.sidebar.sidebar-offcanvas.open
+  .navbar
+  .navbar-brand-wrapper
+  .navbar-brand.brand-logo-mini
+  img {
   width: 100%;
-    max-width: 100%;
+  max-width: 100%;
 }
 
-.navbar.fixed-top+.page-body-wrapper {
-    padding-top: 70px;
+.navbar.fixed-top + .page-body-wrapper {
+  padding-top: 70px;
 }
 
 .content-wrapper {
@@ -5469,5 +5466,5 @@ nav.sidebar.sidebar-offcanvas.open .navbar .navbar-brand-wrapper .navbar-brand.b
   -webkit-flex-grow: 1;
   flex-grow: 1;
   /* background: #000; */
-  height:100%;
+  height: 100%;
 }

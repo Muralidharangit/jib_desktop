@@ -12,6 +12,7 @@ import axios from "axios";
 import BASE_URL from "../../../API/api";
 import { Images } from "./constants/images";
 import routes from "../../routes/route";
+import Sidebar from "./Sidebar";
 
 const FilteredProviderGamesPage = () => {
   const [games, setGames] = useState([]);
@@ -20,6 +21,7 @@ const FilteredProviderGamesPage = () => {
   const [showFullScreenGame, setShowFullScreenGame] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isLaunchingGame, setIsLaunchingGame] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const iframeRef = useRef(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -171,81 +173,95 @@ const FilteredProviderGamesPage = () => {
       )}
 
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-      <StickyHeader />
+      {/* header  */}
+      <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      {/* header end */}
 
-      <div className="container">
-        <div className="game-list px-1 container">
-          <h5 className="text-white text-capitalize my-2">
-            {filterType ? `${filterType} Games` : "Games"}
-          </h5>
+      <div className="container-fluid page-body-wrapper">
+        {/* Sidebar Nav Starts */}
+        <Sidebar />
+        {/* Sidebar Nav Ends */}
+        {/* 🔍 Search Bar */}
 
-          <div className="">
-            <div className="row">
-              {loading ? (
-                <p className="text-white text-center">🎮 Loading games...</p>
-              ) : games.length > 0 ? (
-                // .filter((game) => game.image)
-                games.map((game) => (
-                  <div
-                    className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
-                    key={game.uuid}
-                  >
-                    <div
-                      className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
-                      onClick={() => handleGameClick(game)}
-                    >
-                      <div className="game-card position-relative p-0 m-0 overflow-hidden">
-                        <img
-                          src={
-                            game.image && game.image !== ""
-                              ? game.image
-                              : "assets/img/play_now.png"
-                          }
-                          className="w-100 m-0"
-                          alt={game.name}
-                        />
+        <div className="main-panel">
+          <div className="content-wrapper">
+            <div className="max-1250 mx-auto">
+              <div className="game-list px-1 container">
+                <h5 className="text-white text-capitalize my-2">
+                  {filterType ? `${filterType} Games` : "Games"}
+                </h5>
 
-                        {/* <h3>{game.name}</h3> */}
-                        {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
+                <div className="">
+                  <div className="row">
+                    {loading ? (
+                      <p className="text-white text-center">
+                        🎮 Loading games...
+                      </p>
+                    ) : games.length > 0 ? (
+                      // .filter((game) => game.image)
+                      games.map((game) => (
+                        <div
+                          className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                          key={game.uuid}
+                        >
+                          <div
+                            className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
+                            onClick={() => handleGameClick(game)}
+                          >
+                            <div className="game-card position-relative p-0 m-0 overflow-hidden">
+                              <img
+                                src={
+                                  game.image && game.image !== ""
+                                    ? game.image
+                                    : "assets/img/play_now.png"
+                                }
+                                className="w-100 m-0"
+                                alt={game.name}
+                              />
+
+                              {/* <h3>{game.name}</h3> */}
+                              {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
                           <span className="fs-12 fw-bold text-truncate">
                             {game.name}
                           </span>
                         </div> */}
+                            </div>
+                            <div className="btn-play position-absolute top-50 start-50 translate-middle">
+                              <i className="fa-solid fa-play"></i>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="d-flex flex-column align-items-center mt-5">
+                        <img
+                          src="assets/img/notification/img_2.png"
+                          alt="unauth"
+                          className="w-75"
+                        />
+                        <p className="text-white text-center">
+                          No games available.
+                        </p>
                       </div>
-                      <div className="btn-play position-absolute top-50 start-50 translate-middle">
-                        <i className="fa-solid fa-play"></i>
-                      </div>
-                    </div>
+                    )}
                   </div>
-                ))
-              ) : (
-                <div className="d-flex flex-column align-items-center mt-5">
-                  <img
-                    src="assets/img/notification/img_2.png"
-                    alt="unauth"
-                    className="w-75"
-                  />
-                  <p className="text-white text-center">No games available.</p>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {showFullScreenGame && selectedGameUrl && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "#000",
-            zIndex: 9999,
-          }}
-        >
-          {/* <nav className="navbar px-2">
+            {showFullScreenGame && selectedGameUrl && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  backgroundColor: "#000",
+                  zIndex: 9999,
+                }}
+              >
+                {/* <nav className="navbar px-2">
             <div className="container-fluid p-0">
               <div className="d-flex justify-content-between w-100 align-items-center">
 
@@ -283,17 +299,20 @@ const FilteredProviderGamesPage = () => {
               </div>
             </div>
           </nav> */}
-          <iframe
-            ref={iframeRef}
-            src={selectedGameUrl}
-            title="Game"
-            style={{ width: "100%", height: "100%", border: "none" }}
-            allowFullScreen
-          />
+                <iframe
+                  ref={iframeRef}
+                  src={selectedGameUrl}
+                  title="Game"
+                  style={{ width: "100%", height: "100%", border: "none" }}
+                  allowFullScreen
+                />
+              </div>
+            )}
+            <div className="" style={{ marginTop: "100px" }}></div>
+            <Footer />
+          </div>
         </div>
-      )}
-      <div className="" style={{ marginTop: "100px" }}></div>
-      <Footer />
+      </div>
     </>
   );
 };

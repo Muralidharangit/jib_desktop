@@ -19,6 +19,7 @@ import {
   manualHotGames,
 } from "../../API/manualGames";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Sidebar from "./Header/Sidebar";
 
 const FilteredGamesPage = () => {
   const [games, setGames] = useState([]);
@@ -44,6 +45,7 @@ const FilteredGamesPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchResults, setSearchResults] = useState([]);
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // const navigate = useNavigate();
   // 1️⃣ Handle search input changes
   useEffect(() => {
@@ -359,234 +361,248 @@ const FilteredGamesPage = () => {
         </div>
       )}
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-      <StickyHeader />
+      {/* header  */}
+      <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      {/* header end */}
 
-      <div className="container ">
+      <div className="container-fluid page-body-wrapper">
+        {/* Sidebar Nav Starts */}
+        <Sidebar />
+        {/* Sidebar Nav Ends */}
         {/* 🔍 Search Bar */}
-        <div className="search_container_box">
-          <form className="form my-2" onSubmit={handleSubmit}>
-            <button type="submit">
-              <i className="ri-search-2-line fs-18" />
-            </button>
 
-            <input
-              type="text"
-              placeholder="Search games..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onInput={(e) => setSearchTerm(e.target.value)} // ✅ extra support for mobile
-              className="my-3 input"
-            />
+        <div className="main-panel">
+          <div className="content-wrapper">
+            <div className="max-1250 mx-auto">
+              <div className="search_container_box">
+                <form className="form my-2" onSubmit={handleSubmit}>
+                  <button type="submit">
+                    <i className="ri-search-2-line fs-18" />
+                  </button>
 
-            {isSearchMode && (
-              <button
-                type="button"
-                className="reset"
-                onClick={() => {
-                  setSearchTerm("");
-                  setSearchByNameResults([]); // ✅ Clear actual search result state
-                  setSearchByProviderResults([]); // ✅ Clear provider results
-                  setSearchPage(1); // ✅ Reset pagination
-                  setIsSearchMode(false);
-                  setHasMore(true); // ✅ Enable future searching
-                }}
-              >
-                ❌
-              </button>
-            )}
-          </form>
-        </div>
+                  <input
+                    type="text"
+                    placeholder="Search games..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onInput={(e) => setSearchTerm(e.target.value)} // ✅ extra support for mobile
+                    className="my-3 input"
+                  />
 
-        {/* 🕹️ Game List */}
-        {isSearchMode ? (
-          <>
-            {isSearchMode && (
-              <>
-                {searchLoading && searchPage === 1 ? (
-                  <p className="text-white text-center mt-5">
-                    🎮 Loading games...
-                  </p>
-                ) : searchByNameResults.length > 0 ||
-                  searchByProviderResults.length > 0 ? (
-                  <>
-                    {/* 🔍 Search by Game Name Section */}
-                    {searchByNameResults.length > 0 && (
-                      <>
-                        <h5 className="text-white mt-4">Search by Game Name</h5>
-                        <div className="row">
-                          {searchByNameResults.map((game, index) => (
-                            <motion.div
-                              className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
-                              key={game.uuid}
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{
-                                duration: 0.3,
-                                delay: index * 0.002,
-                              }}
-                            >
-                              <div
-                                className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
-                                onClick={() => handleGameClick(game)}
-                              >
-                                <div className="game-card p-0 m-0 overflow-hidden">
-                                  <img
-                                    src={
-                                      game.image ||
-                                      "/assets/img/placeholder.png"
-                                    }
-                                    className="game-card-img"
-                                    alt={game.name}
-                                  />
+                  {isSearchMode && (
+                    <button
+                      type="button"
+                      className="reset"
+                      onClick={() => {
+                        setSearchTerm("");
+                        setSearchByNameResults([]); // ✅ Clear actual search result state
+                        setSearchByProviderResults([]); // ✅ Clear provider results
+                        setSearchPage(1); // ✅ Reset pagination
+                        setIsSearchMode(false);
+                        setHasMore(true); // ✅ Enable future searching
+                      }}
+                    >
+                      ❌
+                    </button>
+                  )}
+                </form>
+              </div>
+
+              {/* 🕹️ Game List */}
+              {isSearchMode ? (
+                <>
+                  {isSearchMode && (
+                    <>
+                      {searchLoading && searchPage === 1 ? (
+                        <p className="text-white text-center mt-5">
+                          🎮 Loading games...
+                        </p>
+                      ) : searchByNameResults.length > 0 ||
+                        searchByProviderResults.length > 0 ? (
+                        <>
+                          {/* 🔍 Search by Game Name Section */}
+                          {searchByNameResults.length > 0 && (
+                            <>
+                              <h5 className="text-white mt-4">
+                                Search by Game Name
+                              </h5>
+                              <div className="row">
+                                {searchByNameResults.map((game, index) => (
+                                  <motion.div
+                                    className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                    key={game.uuid}
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{
+                                      duration: 0.3,
+                                      delay: index * 0.002,
+                                    }}
+                                  >
+                                    <div
+                                      className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
+                                      onClick={() => handleGameClick(game)}
+                                    >
+                                      <div className="game-card p-0 m-0 overflow-hidden">
+                                        <img
+                                          src={
+                                            game.image ||
+                                            "/assets/img/placeholder.png"
+                                          }
+                                          className="game-card-img"
+                                          alt={game.name}
+                                        />
+                                      </div>
+                                      <div className="game-play-button d-flex flex-column">
+                                        <div className="btn-play">
+                                          <i className="fa-solid fa-play"></i>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </>
+                          )}
+
+                          {/* 🔍 Search by Provider */}
+                          {searchPage === 1 &&
+                            searchByProviderResults.length > 0 && (
+                              <>
+                                <h5 className="text-white mt-6">
+                                  Search by Provider
+                                </h5>
+                                <div className="row">
+                                  {searchByProviderResults.map(
+                                    (game, index) => (
+                                      <motion.div
+                                        className="col-md-4 col-sm-4 col-6 px-1"
+                                        key={game.uuid}
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{
+                                          duration: 0.3,
+                                          delay: index * 0.002,
+                                        }}
+                                      >
+                                        <div
+                                          className="game-card-wrapper rounded-2 new-cardclr mt-2"
+                                          onClick={() => handleGameClick(game)}
+                                        >
+                                          <div className="game-card p-0 m-0 p-1">
+                                            <img
+                                              src={
+                                                game.image ||
+                                                "/assets/img/placeholder.png"
+                                              }
+                                              className="game-card-img"
+                                              alt={game.name}
+                                            />
+                                            <div className="d-flex flex-column text-white text-center py-2 px-1">
+                                              <span className="fs-12 fw-bold text-truncate">
+                                                {game.name}
+                                              </span>
+                                            </div>
+                                          </div>
+                                          <div className="game-play-button d-flex flex-column">
+                                            <div className="btn-play">
+                                              <i className="fa-solid fa-play"></i>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </motion.div>
+                                    )
+                                  )}
                                 </div>
-                                <div className="game-play-button d-flex flex-column">
-                                  <div className="btn-play">
-                                    <i className="fa-solid fa-play"></i>
+                              </>
+                            )}
+                        </>
+                      ) : searchTerm.trim().length >= 3 && !searchLoading ? (
+                        <p className="text-center text-gray-400 mt-4">
+                          No results found.
+                        </p>
+                      ) : null}
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* filter Game List Starts */}
+                  <SkeletonTheme baseColor="#313131" highlightColor="#525252">
+                    <div className="game-list px-1 container">
+                      <h5 className="text-white text-capitalize my-2">
+                        {filterType
+                          ? filterType === "card"
+                            ? "Live Casino"
+                            : `${filterType} Games`
+                          : "Games"}
+                      </h5>
+
+                      <div className="">
+                        <div className="row">
+                          {loading ? (
+                            // 🔄 Skeleton Cards While Loading
+                            Array.from({ length: 6 }).map((_, index) => (
+                              <div
+                                className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                key={index}
+                              >
+                                <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
+                                  <Skeleton height={140} borderRadius={10} />
+                                  <div className="mt-2 px-1">
+                                    <Skeleton height={12} width="80%" />
                                   </div>
                                 </div>
                               </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </>
-                    )}
-
-                    {/* 🔍 Search by Provider */}
-                    {searchPage === 1 && searchByProviderResults.length > 0 && (
-                      <>
-                        <h5 className="text-white mt-6">Search by Provider</h5>
-                        <div className="row">
-                          {searchByProviderResults.map((game, index) => (
-                            <motion.div
-                              className="col-md-4 col-sm-4 col-6 px-1"
-                              key={game.uuid}
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{
-                                duration: 0.3,
-                                delay: index * 0.002,
-                              }}
-                            >
-                              <div
-                                className="game-card-wrapper rounded-2 new-cardclr mt-2"
-                                onClick={() => handleGameClick(game)}
-                              >
-                                <div className="game-card p-0 m-0 p-1">
-                                  <img
-                                    src={
-                                      game.image ||
-                                      "/assets/img/placeholder.png"
-                                    }
-                                    className="game-card-img"
-                                    alt={game.name}
-                                  />
-                                  <div className="d-flex flex-column text-white text-center py-2 px-1">
-                                    <span className="fs-12 fw-bold text-truncate">
-                                      {game.name}
-                                    </span>
+                            ))
+                          ) : games.length > 0 ? (
+                            games
+                              .filter((game) => game.image)
+                              .map((game) => (
+                                <div
+                                  className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                  key={game.uuid}
+                                >
+                                  <div
+                                    className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
+                                    onClick={() => handleGameClick(game)}
+                                  >
+                                    <div className="game-card position-relative p-0 m-0 overflow-hidden">
+                                      <img
+                                        src={game.image}
+                                        className="game-card-img"
+                                        alt={game.name}
+                                      />
+                                    </div>
+                                    <div className="btn-play position-absolute top-50 start-50 translate-middle">
+                                      <i className="fa-solid fa-play"></i>
+                                    </div>
                                   </div>
                                 </div>
-                                <div className="game-play-button d-flex flex-column">
-                                  <div className="btn-play">
-                                    <i className="fa-solid fa-play"></i>
-                                  </div>
-                                </div>
-                              </div>
-                            </motion.div>
-                          ))}
+                              ))
+                          ) : (
+                            // ❌ No Games
+                            <div className="d-flex flex-column align-items-center mt-5">
+                              <img
+                                src="assets/img/notification/img_2.png"
+                                alt="unauth"
+                                className="w-75"
+                              />
+                              <p className="text-white text-center">
+                                No games available.
+                              </p>
+                            </div>
+                          )}
                         </div>
-                      </>
-                    )}
-                  </>
-                ) : searchTerm.trim().length >= 3 && !searchLoading ? (
-                  <p className="text-center text-gray-400 mt-4">
-                    No results found.
-                  </p>
-                ) : null}
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            {/* filter Game List Starts */}
-          <SkeletonTheme baseColor="#313131" highlightColor="#525252">
-  <div className="game-list px-1 container">
-    <h5 className="text-white text-capitalize my-2">
-      {filterType ? `${filterType} Games` : "Games"}
-    </h5>
+                      </div>
+                    </div>
+                  </SkeletonTheme>
 
-    <div className="">
-      <div className="row">
-        {loading ? (
-          // 🔄 Skeleton Cards While Loading
-          Array.from({ length: 6 }).map((_, index) => (
-            <div
-              className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
-              key={index}
-            >
-              <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
-                <Skeleton height={140}  borderRadius={10} />
-                <div className="mt-2 px-1">
-                  <Skeleton height={12} width="80%" />
-                </div>
-              </div>
-            </div>
-          ))
-        ) : games.length > 0 ? (
-          games
-            .filter((game) => game.image)
-            .map((game) => (
-              <div
-                className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
-                key={game.uuid}
-              >
-                <div
-                  className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
-                  onClick={() => handleGameClick(game)}
-                >
-                  <div className="game-card position-relative p-0 m-0 overflow-hidden">
-                    <img
-                      src={game.image}
-                      className="game-card-img"
-                      alt={game.name}
-                    />
-                  </div>
-                  <div className="btn-play position-absolute top-50 start-50 translate-middle">
-                    <i className="fa-solid fa-play"></i>
-                  </div>
-                </div>
-              </div>
-            ))
-        ) : (
-          // ❌ No Games
-          <div className="d-flex flex-column align-items-center mt-5">
-            <img
-              src="assets/img/notification/img_2.png"
-              alt="unauth"
-              className="w-75"
-            />
-            <p className="text-white text-center">No games available.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-</SkeletonTheme>
+                  {/* filter Games End here  */}
+                </>
+              )}
 
-            {/* filter Games End here  */}
-          </>
-        )}
-
-
-
-
-
-
-
-
-
-        {/* filter Game List Starts */}
-        {/* <div className="game-list px-3 container">
+              {/* filter Game List Starts */}
+              {/* <div className="game-list px-3 container">
         <h5 className="text-white text-capitalize my-2">
           {filterType ? `${filterType} Games` : "Games"}
         </h5>
@@ -635,21 +651,21 @@ const FilteredGamesPage = () => {
           </div>
         </div>
       </div> */}
-        {/* filter Games End here  */}
-      </div>
-      {showFullScreenGame && selectedGameUrl && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "#000",
-            zIndex: 9999,
-          }}
-        >
-          {/* <nav className="navbar px-2">
+              {/* filter Games End here  */}
+            </div>
+            {showFullScreenGame && selectedGameUrl && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  backgroundColor: "#000",
+                  zIndex: 9999,
+                }}
+              >
+                {/* <nav className="navbar px-2">
             <div className="container-fluid p-0">
               <div className="d-flex justify-content-between w-100 align-items-center">
 
@@ -687,17 +703,20 @@ const FilteredGamesPage = () => {
               </div>
             </div>
           </nav> */}
-          <iframe
-            ref={iframeRef}
-            src={selectedGameUrl}
-            title="Game"
-            style={{ width: "100%", height: "100%", border: "none" }}
-            allowFullScreen
-          />
+                <iframe
+                  ref={iframeRef}
+                  src={selectedGameUrl}
+                  title="Game"
+                  style={{ width: "100%", height: "100%", border: "none" }}
+                  allowFullScreen
+                />
+              </div>
+            )}
+            <div className="" style={{ marginTop: "100px" }}></div>
+            <Footer />
+          </div>
         </div>
-      )}
-      <div className="" style={{ marginTop: "100px" }}></div>
-      <Footer />
+      </div>
     </>
   );
 };

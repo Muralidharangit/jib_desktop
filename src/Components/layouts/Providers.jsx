@@ -7,8 +7,9 @@ import Footer from "./footer/Footer";
 import { motion } from "framer-motion";
 import axios from "axios";
 import axiosInstance from "../../API/axiosConfig";
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Sidebar from "./Header/Sidebar";
 
 const Providers = () => {
   const [providerList, setProviderList] = useState([]);
@@ -19,6 +20,8 @@ const Providers = () => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [isSearchingGames, setIsSearchingGames] = useState(false);
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const pageRef = useRef(1);
   const isFetchingRef = useRef(false);
@@ -53,7 +56,6 @@ const Providers = () => {
       setIsSearchingGames(false);
     }
   };
-
 
   //  const handleAutoSearch = async (term) => {
   //   try {
@@ -139,202 +141,231 @@ const Providers = () => {
       )}
 
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-      <StickyHeader />
+      {/* header  */}
+      <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      {/* header end */}
 
-      <div className="container">
-        <div className="search_container_box">
-          <form className="form my-2" onSubmit={(e) => e.preventDefault()}>
-            <button type="submit">
-              <i className="ri-search-2-line fs-18" />
-            </button>
-            <input
-              type="text"
-              placeholder="Search provider..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="my-3 input"
-            />
-            <button
-              className="reset"
-              type="reset"
-              onClick={() => setSearchTerm("")}
-            />
-          </form>
-        </div>
+      <div className="container-fluid page-body-wrapper">
+        {/* Sidebar Nav Starts */}
+        <Sidebar />
+        {/* Sidebar Nav Ends */}
+        {/* 🔍 Search Bar */}
 
-        <h5>Providers</h5>
-        <div className="row">
-          {searchTerm.trim().length >= 3 ? (
-            isSearchingGames ? (
-              Array.from({ length: 6 }).map((_, index) => (
-                <div
-                  className="col-md-4 col-sm-4 col-6 mb-3"
-                  key={`searched-game-skel-${index}`}
+        <div className="main-panel">
+          <div className="content-wrapper">
+            <div className="max-1250 mx-auto">
+              <div className="search_container_box">
+                <form
+                  className="form my-2"
+                  onSubmit={(e) => e.preventDefault()}
                 >
-                  <div className="game-card-wrapper rounded p-2 bg-dark text-white text-center">
-                    <Skeleton
-                      height={100}
-                      borderRadius={4}
-                      baseColor="#313131"
-                      highlightColor="#525252"
-                      className="mb-2"
-                    />
-                    {/* Skeleton for game name text */}
-                    <Skeleton
-                      height={14}
-                      width="80%"
-                      baseColor="#313131"
-                      highlightColor="#525252"
-                      className="mx-auto mt-2"
-                    />
-                    {/* Skeleton for provider name text */}
-                    <Skeleton
-                      height={12}
-                      width="60%"
-                      baseColor="#313131"
-                      highlightColor="#525252"
-                      className="mt-1 mx-auto"
-                    />
-                  </div>
-                </div>
-              ))
-            ) : searchedGames.length > 0 ? (
-              searchedGames.map((game, index) => (
-                <motion.div
-                  className="col-md-4 col-sm-4 col-6 mb-3"
-                  key={game.uuid || `${game.name}-${index}`}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
-                >
-                  <div
-                    className="d-flex gap-1 flex-column align-items-center justify-content-center"
-                    onClick={() =>
-                      navigate(
-                        `/filtered-provider-games?provider=${game.provider}`
-                      )
-                    }
-                  >
-                    <img
-                      src={
-                        game.images?.logo ||
-                        game.images?.name ||
-                        game.images?.logo_name ||
-                        "assets/img/no-image.png"
-                      }
-                      alt={game.provider || "Provider Logo"}
-                      style={{ width: "40%" }}
-                    />
-                    <h6 className="mt-2 fs-14 text-truncate">{game.name}</h6>
-                    <p className="fs-12 mb-0">{game.provider}</p>
-                  </div>
-                </motion.div>
-              ))
-            ) : (
-              <p className="text-white text-center mt-5">
-                No games found for this provider.
-              </p>
-            )
-          ) : isInitialLoading ? (
-            Array.from({ length: 9 }).map((_, index) => (
-              <div
-                className="col-md-4 col-sm-4 col-4 px-1"
-                key={`provider-skel-${index}`}
-              >
-                <div
-                  className="game-card-wrapper rounded-2 new-cardclr mt-2 d-flex justify-content-center pt-2"
-                  style={{ height: "100px" }}
-                >
-                  <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
-                    <Skeleton
-                      circle={true}
-                      height={40}
-                      width={40}
-                      baseColor="#313131"
-                      highlightColor="#525252"
-                    />
-                    {/* Skeleton for provider name text */}
-                    <Skeleton
-                      height={12} 
-                       width={100}
-                      baseColor="#313131"
-                      highlightColor="#525252"
-                      className="mt-1 "
-                    />
-
-                      {/* <Skeleton  width={100} height={20} baseColor="#313131" highlightColor="#525252" /> */}
-                  </div>
-
-                  
-                  <div className="game-play-button d-flex flex-column" style={{ opacity: 0 }}>
-                    <div className="btn-play">
-                        <Skeleton circle width={40} height={40} baseColor="#313131" highlightColor="#525252" />
-
-                       
-                    </div>
-
-  {/* <Skeleton  width={100} height={20} baseColor="#313131" highlightColor="#525252" /> */}
-                  </div>
-                </div>
+                  <button type="submit">
+                    <i className="ri-search-2-line fs-18" />
+                  </button>
+                  <input
+                    type="text"
+                    placeholder="Search provider..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="my-3 input"
+                  />
+                  <button
+                    className="reset"
+                    type="reset"
+                    onClick={() => setSearchTerm("")}
+                  />
+                </form>
               </div>
-            ))
-          ) : (
 
-            
-           // ✅ Show all providers (default view)
+              <h5>Providers </h5>
+              <div className="row">
+                {searchTerm.trim().length >= 3 ? (
+                  isSearchingGames ? (
+                    Array.from({ length: 6 }).map((_, index) => (
+                      <div
+                        className="col-lg-3 col-md-4 col-sm-4 col-6 mb-3"
+                        key={`searched-game-skel-${index}`}
+                      >
+                        <div className="game-card-wrapper rounded p-2 bg-dark text-white text-center">
+                          <Skeleton
+                            height={100}
+                            borderRadius={4}
+                            baseColor="#313131"
+                            highlightColor="#525252"
+                            className="mb-2"
+                          />
+                          {/* Skeleton for game name text */}
+                          <Skeleton
+                            height={14}
+                            width="80%"
+                            baseColor="#313131"
+                            highlightColor="#525252"
+                            className="mx-auto mt-2"
+                          />
+                          {/* Skeleton for provider name text */}
+                          <Skeleton
+                            height={12}
+                            width="60%"
+                            baseColor="#313131"
+                            highlightColor="#525252"
+                            className="mt-1 mx-auto"
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : searchedGames.length > 0 ? (
+                    searchedGames.map((game, index) => (
+                      <motion.div
+                        className="col-lg-3 col-md-4 col-sm-4 col-4 mb-3"
+                        key={game.uuid || `${game.name}-${index}`}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4, delay: index * 0.05 }}
+                      >
+                        <div
+                          className="game-card-wrapper rounded-2 new-cardclr mt-2 d-flex justify-content-center pt-2"
+                          style={{ height: "120px" }}
+                          onClick={() =>
+                            navigate(
+                              `/filtered-provider-games?provider=${game.provider}`
+                            )
+                          }
+                        >
+                          <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
+                            <img
+                              src={
+                                game.images?.logo ||
+                                game.images?.name ||
+                                game.images?.logo_name ||
+                                "assets/img/game.png"
+                              }
+                              alt={game.provider || "Provider Logo"}
+                              style={{ width: "27%" }}
+                            />
+                            <span className="fs-12 fw-bold text-truncate text-white">
+                              {game.provider}
+                            </span>
+                          </div>
+                          <div className="game-play-button d-flex flex-column">
+                            <div className="btn-play">
+                              <i className="fa-solid fa-play" />
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <p className="text-white text-center mt-5">
+                      No games found for this provider.
+                    </p>
+                  )
+                ) : isInitialLoading ? (
+                  Array.from({ length: 9 }).map((_, index) => (
+                    <div
+                      className="col-lg-3 col-md-4 col-sm-4 col-4 px-1"
+                      key={`provider-skel-${index}`}
+                    >
+                      <div
+                        className="game-card-wrapper rounded-2 new-cardclr mt-2 d-flex justify-content-center pt-2"
+                        style={{ height: "100px" }}
+                      >
+                        <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
+                          <Skeleton
+                            circle={true}
+                            height={40}
+                            width={40}
+                            baseColor="#313131"
+                            highlightColor="#525252"
+                          />
+                          {/* Skeleton for provider name text */}
+                          <Skeleton
+                            height={12}
+                            width={100}
+                            baseColor="#313131"
+                            highlightColor="#525252"
+                            className="mt-1 "
+                          />
 
-            // .filter(
-            //   (provider) =>
-            //     provider.images?.logo ||
-            //     provider.images?.name ||
-            //     provider.images?.logo_name
-            // // )
-            providerList.map((provider, index) => (
-              <motion.div
-                className="col-md-4 col-sm-4 col-4 px-1"
-                key={provider.id}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
-                <div
-                  className="game-card-wrapper rounded-2 new-cardclr mt-2 d-flex justify-content-center pt-2"
-                  style={{ height: "100px" }}
-                  onClick={() =>
-                    navigate(
-                      `/filtered-provider-games?provider=${provider.provider}`
-                    )
-                  }
-                >
-                  <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
-                    <img
-                      src={
-                        provider.images?.logo ||
-                        provider.images?.name ||
-                        provider.images?.logo_name ||
-                        "assets/img/game.png"
-                      }
-                      alt={provider.provider || "Provider Logo"}
-                      style={{ width: "40%" }}
-                    />
-                    <span className="fs-12 fw-bold text-truncate text-white">
-                      {provider.provider}
-                    </span>
-                  </div>
-                  <div className="game-play-button d-flex flex-column">
-                    <div className="btn-play">
-                      <i className="fa-solid fa-play" />
+                          {/* <Skeleton  width={100} height={20} baseColor="#313131" highlightColor="#525252" /> */}
+                        </div>
+
+                        <div
+                          className="game-play-button d-flex flex-column"
+                          style={{ opacity: 0 }}
+                        >
+                          <div className="btn-play">
+                            <Skeleton
+                              circle
+                              width={40}
+                              height={40}
+                              baseColor="#313131"
+                              highlightColor="#525252"
+                            />
+                          </div>
+
+                          {/* <Skeleton  width={100} height={20} baseColor="#313131" highlightColor="#525252" /> */}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))
-          )}
+                  ))
+                ) : (
+                  // ✅ Show all providers (default view)
+
+                  // .filter(
+                  //   (provider) =>
+                  //     provider.images?.logo ||
+                  //     provider.images?.name ||
+                  //     provider.images?.logo_name
+                  // // )
+                  providerList.map((provider, index) => (
+                    <motion.div
+                      className="col-lg-3 col-md-4 col-sm-4 col-4 px-1"
+                      key={provider.id}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                    >
+                      <div
+                        className="game-card-wrapper rounded-2 new-cardclr mt-2 d-flex justify-content-center pt-2"
+                        style={{ height: "120px" }}
+                        onClick={() =>
+                          navigate(
+                            `/filtered-provider-games?provider=${provider.provider}`
+                          )
+                        }
+                      >
+                        <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
+                          <img
+                            src={
+                              provider.images?.logo ||
+                              provider.images?.name ||
+                              provider.images?.logo_name ||
+                              "assets/img/game.png"
+                            }
+                            alt={provider.provider || "Provider Logo"}
+                            style={{ width: "27%" }}
+                          />
+                          <span className="fs-12 fw-bold text-truncate text-white">
+                            {provider.provider}
+                          </span>
+                        </div>
+                        <div className="game-play-button d-flex flex-column">
+                          <div className="btn-play">
+                            <i className="fa-solid fa-play" />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div style={{ marginTop: "100px" }}></div>
+            <Footer />
+          </div>
         </div>
       </div>
-
-      <div style={{ marginTop: "100px" }}></div>
-      <Footer />
     </>
   );
 };
