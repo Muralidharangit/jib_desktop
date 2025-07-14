@@ -1129,8 +1129,8 @@ function Home() {
                               </div>
                             </div>
                             <div className="col-4 ">
-                              <div className="d-flex  flex-wrap ">
-                                <div className="col-6 ">
+                              <div className="d-flex  flex-wrap  gap-2">
+                                <div className="w-45 ">
                                   <div
                                     className="card bg-cardtrans p-1"
                                     style={{
@@ -1151,7 +1151,7 @@ function Home() {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-6 ">
+                                <div className="w-45 ">
                                   <div
                                     className="card bg-cardtrans p-1"
                                     style={{
@@ -1171,7 +1171,7 @@ function Home() {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-6 pt-2">
+                                <div className="w-45 pt-2">
                                   <div
                                     className="card bg-cardtrans p-1"
                                     style={{
@@ -1191,7 +1191,7 @@ function Home() {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-6 pt-2">
+                                <div className="w-45 pt-2">
                                   <div
                                     className="card bg-cardtrans p-1"
                                     style={{

@@ -33,6 +33,8 @@ const Provider = () => {
     fetchGames();
   }, []);
 
+  // new code 
+
   return (
     <div>
       <StickyHeader />

@@ -177,13 +177,13 @@ const Providers = () => {
                 </form>
               </div>
 
-              <h5>Providers </h5>
+              <h5>Providersd </h5>
               <div className="row">
                 {searchTerm.trim().length >= 3 ? (
                   isSearchingGames ? (
                     Array.from({ length: 6 }).map((_, index) => (
                       <div
-                        className="col-lg-3 col-md-4 col-sm-4 col-6 mb-3"
+                        className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-6 mb-3"
                         key={`searched-game-skel-${index}`}
                       >
                         <div className="game-card-wrapper rounded p-2 bg-dark text-white text-center">
@@ -216,7 +216,7 @@ const Providers = () => {
                   ) : searchedGames.length > 0 ? (
                     searchedGames.map((game, index) => (
                       <motion.div
-                        className="col-lg-3 col-md-4 col-sm-4 col-4 mb-3"
+                        className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 mb-3"
                         key={game.uuid || `${game.name}-${index}`}
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -262,7 +262,7 @@ const Providers = () => {
                 ) : isInitialLoading ? (
                   Array.from({ length: 9 }).map((_, index) => (
                     <div
-                      className="col-lg-3 col-md-4 col-sm-4 col-4 px-1"
+                      className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 px-1"
                       key={`provider-skel-${index}`}
                     >
                       <div
@@ -319,7 +319,7 @@ const Providers = () => {
                   // // )
                   providerList.map((provider, index) => (
                     <motion.div
-                      className="col-lg-3 col-md-4 col-sm-4 col-4 px-1"
+                      className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 px-1"
                       key={provider.id}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
