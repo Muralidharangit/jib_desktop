@@ -67,7 +67,7 @@ function PrivacyPolicy() {
                   <h2 className="persona_info_heading">
                     How we use customers’ personal information:
                   </h2>
-                  <ul className="personal_info_list">
+                  <ul className="personal_info_list text-white">
                     <li>
                       The main purpose of collecting and using players’ personal
                       information is to improve the quality of customer service.

@@ -183,7 +183,7 @@ const Sidebar = () => {
                   </a>
                 </li>
               </ul>
-            </div>
+            </div>lll
           </li> */}
         </ul>
         <div className="br-top-gray"></div>
@@ -194,7 +194,7 @@ const Sidebar = () => {
                 type="button"
                 className="btn swiper-scrollbar-drag w-100 bgbody-color text-white rounded-pill fs-15 fw-500"
               >
-                Contact Us
+                Join Now
               </button>
             </a>
           </div>

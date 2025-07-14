@@ -20,8 +20,8 @@ function TermsCondition() {
         {/* Sidebar Nav Ends */}
         <div className="main-panel">
           <div className="content-wrapper">
-            <div className="max-1250 mx-auto"></div>
-            <div className="h-100 d-flex justify-content-evenly flex-column">
+            <div className="max-1250 mx-auto">
+  <div className="h-100 d-flex justify-content-evenly flex-column">
               <div className="pt-3 pb-2 ">
                 <div className="breadcrumb">
                   <nav aria-label="breadcrumb">
@@ -89,6 +89,8 @@ function TermsCondition() {
                 </p>
               </section>
             </div>
+            </div>
+          
           </div>
           <BottomFooter />
           <div className="h-100 w-100 mb-5"></div>
