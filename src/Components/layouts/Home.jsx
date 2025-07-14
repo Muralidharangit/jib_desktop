@@ -752,11 +752,11 @@ function Home() {
                                           <i className="fa-solid fa-play"></i>
                                         </div>
                                       </div>
-                                      <div className="d-flex flex-column text-white text-center py-2 px-1">
+                                      {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
                                         <span className="fs-12 fw-bold text-truncate">
                                           {game.name}
                                         </span>
-                                      </div>
+                                      </div> */}
                                     </div>
                                   </div>
                                 </SwiperSlide>
@@ -1495,12 +1495,12 @@ function Home() {
                                         className="game-card-img"
                                         alt={game.name}
                                       />
-                                      <div className="d-flex flex-column text-white text-center py-2 px-1">
+                                      {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
                                         <span className="fs-12 fw-bold text-truncate">
                                           {game.name}
                                         </span>
                                         <span className="fs-10">Duel</span>
-                                      </div>
+                                      </div> */}
                                     </div>
                                     <div className="game-play-button d-flex flex-column">
                                       <div

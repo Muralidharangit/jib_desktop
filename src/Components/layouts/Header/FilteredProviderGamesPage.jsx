@@ -201,7 +201,7 @@ const FilteredProviderGamesPage = () => {
                       // .filter((game) => game.image)
                       games.map((game) => (
                         <div
-                          className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                          className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
                           key={game.uuid}
                         >
                           <div
