@@ -5423,7 +5423,7 @@ swiper-container.mySwiper.new_class4 swiper-slide {
 .user-icon {
   width: 35px;
   height: 35px;
-  background: #e4063b;
+  /* background: #e4063b; */
   border-radius: 10%;
   display: flex;
   justify-content: center;

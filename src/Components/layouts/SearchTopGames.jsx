@@ -1124,7 +1124,7 @@ const SearchTopGames = () => {
                                       {searchByNameResults.map(
                                         (game, index) => (
                                           <motion.div
-                                            className="col-md-4 col-sm-4 col-6 px-1"
+                                            className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6  px-1"
                                             key={game.uuid}
                                             initial={{ opacity: 0, scale: 0.8 }}
                                             animate={{ opacity: 1, scale: 1 }}
@@ -1176,7 +1176,7 @@ const SearchTopGames = () => {
                                         {searchByProviderResults.map(
                                           (game, index) => (
                                             <motion.div
-                                              className="col-md-4 col-sm-4 col-6 px-1"
+                                              className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6  px-1"
                                               key={game.uuid}
                                               initial={{
                                                 opacity: 0,
