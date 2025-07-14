@@ -1245,7 +1245,7 @@ const SearchTopGames = () => {
                               <div className="row">
                                 {Array.from({ length: 6 }).map((_, index) => (
                                   <div
-                                    className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                    className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
                                     key={index}
                                   >
                                     <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
@@ -1262,7 +1262,7 @@ const SearchTopGames = () => {
                                 <div className="row">
                                   {games.map((game, index) => (
                                     <motion.div
-                                      className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                      className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
                                       key={game.uuid || game.name + index}
                                       initial={{ opacity: 0, scale: 0.8 }}
                                       animate={{ opacity: 1, scale: 1 }}

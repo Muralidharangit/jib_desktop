@@ -579,7 +579,7 @@ const SearchTopGames = () => {
               </>
             ) : (
               <>
-                <h5>Filtered Games</h5>
+                <h5>Filteredsdd Games</h5>
                 <div className="row">
                   {loading ? (
                     <p className="text-white text-center mt-5">

@@ -543,7 +543,7 @@ const FilteredGamesPage = () => {
                             // 🔄 Skeleton Cards While Loading
                             Array.from({ length: 6 }).map((_, index) => (
                               <div
-                                className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
                                 key={index}
                               >
                                 <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
@@ -559,7 +559,7 @@ const FilteredGamesPage = () => {
                               .filter((game) => game.image)
                               .map((game) => (
                                 <div
-                                  className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                  className="col-xl-2 col-lg-3 col-md-4 col-sm-4 px-1 col-custom-3"
                                   key={game.uuid}
                                 >
                                   <div
