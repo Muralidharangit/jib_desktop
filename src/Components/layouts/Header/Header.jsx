@@ -313,74 +313,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                     <i className="fi fi-bs-expand" id="fullscreen-button" />
                   </a>
                 </li>
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link count-indicator dropdown-toggle"
-                    id="messageDropdown"
-                    href="#"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <i className="fi fi-rr-comment-alt" />
-                    <span className="count-symbol bg-danger" />
-                  </a>
-                  <div
-                    className="dropdown-menu dropdown-menu-end navbar-dropdown preview-list"
-                    aria-labelledby="messageDropdown"
-                  >
-                    <h6 className="p-3 mb-0">Messages</h6>
-                    <div className="dropdown-divider" />
-                    <a className="dropdown-item preview-item">
-                      <div className="preview-thumbnail">
-                        <img
-                          src="../assets/images/faces/face4.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        />
-                      </div>
-                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                          Mark send you a message
-                        </h6>
-                        <p className="text-gray mb-0"> 1 Minutes ago </p>
-                      </div>
-                    </a>
-                    <div className="dropdown-divider" />
-                    <a className="dropdown-item preview-item">
-                      <div className="preview-thumbnail">
-                        <img
-                          src="../assets/images/faces/face2.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        />
-                      </div>
-                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                          Cregh send you a message
-                        </h6>
-                        <p className="text-gray mb-0"> 15 Minutes ago </p>
-                      </div>
-                    </a>
-                    <div className="dropdown-divider" />
-                    <a className="dropdown-item preview-item">
-                      <div className="preview-thumbnail">
-                        <img
-                          src="../assets/images/faces/face3.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        />
-                      </div>
-                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                          Profile picture updated
-                        </h6>
-                        <p className="text-gray mb-0"> 18 Minutes ago </p>
-                      </div>
-                    </a>
-                    <div className="dropdown-divider" />
-                    <h6 className="p-3 mb-0 text-center">4 new messages</h6>
-                  </div>
-                </li>
+
                 <li className="nav-item dropdown">
                   <a
                     className="nav-link count-indicator dropdown-toggle"
@@ -394,6 +327,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                   <div
                     className="dropdown-menu dropdown-menu-end navbar-dropdown preview-list"
                     aria-labelledby="notificationDropdown"
+                    style={{ background: "#161616" }}
                   >
                     <h6 className="p-3 mb-0">Notifications</h6>
                     <div className="dropdown-divider" />
@@ -407,8 +341,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         <h6 className="preview-subject font-weight-normal mb-1">
                           Event today
                         </h6>
-                        <p className="text-gray ellipsis mb-0">
-                          {" "}
+                        <p className="text-white ellipsis mb-0">
                           Just a reminder that you have an event today{" "}
                         </p>
                       </div>
@@ -424,7 +357,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         <h6 className="preview-subject font-weight-normal mb-1">
                           Settings
                         </h6>
-                        <p className="text-gray ellipsis mb-0">
+                        <p className="text-white ellipsis mb-0">
                           {" "}
                           Update dashboard{" "}
                         </p>
@@ -441,19 +374,19 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         <h6 className="preview-subject font-weight-normal mb-1">
                           Launch Admin
                         </h6>
-                        <p className="text-gray ellipsis mb-0">
+                        <p className="text-white ellipsis mb-0">
                           {" "}
                           New admin wow!{" "}
                         </p>
                       </div>
                     </a>
                     <div className="dropdown-divider" />
-                    <h6 className="p-3 mb-0 text-center">
+                    {/* <h6 className="p-3 mb-0 text-center">
                       See all notifications
-                    </h6>
+                    </h6> */}
                   </div>
                 </li>
-                <li className="nav-item nav-profile">
+                {/* <li className="nav-item nav-profile">
                   <div className="user-icon ms-2">
                     <a className="" href="./sideMenu.html">
                       <img
@@ -468,7 +401,124 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       />
                     </a>
                   </div>
+                </li> */}
+
+                {/* Profile dropdown starts */}
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link count-indicator dropdown-toggle"
+                    id="messageDropdown"
+                    href="#"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <div className="user-icon ms-2">
+                      <img
+                        src="assets/img/icons/man.png"
+                        alt=""
+                        srcSet=""
+                        className="w-100"
+                        style={{ borderRadius: "50%" }}
+                      />
+                    </div>
+                  </a>
+                  <div
+                    className="dropdown-menu dropdown-menu-end navbar-dropdown preview-list"
+                    aria-labelledby="messageDropdown"
+                    style={{ background: "#161616" }}
+                  >
+                    {/* deposit starts */}
+                    <div className="dropdown-divider" />
+                    <a className="dropdown-item preview-item">
+                      <div className="preview-thumbnail">
+                        {/* <img
+                          src="/assets/images/faces/face2.jpg"
+                          alt="image"
+                          className="profile-pic"
+                        /> */}
+                      </div>
+                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                          Deposit
+                        </h6>
+                        {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
+                      </div>
+                    </a>
+                    {/* deposit ends */}
+                    {/* Withdraw starts */}
+                    <div className="dropdown-divider" />
+                    <a className="dropdown-item preview-item">
+                      <div className="preview-thumbnail">
+                        {/* <img
+                          src="/assets/images/faces/face2.jpg"
+                          alt="image"
+                          className="profile-pic"
+                        /> */}
+                      </div>
+                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                          Withdraw
+                        </h6>
+                        {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
+                      </div>
+                    </a>
+                    {/* Withdraw ends */}
+                    {/* <h6 className="p-3 mb-0">Messages</h6> */}
+                    <div className="dropdown-divider" />
+                    <a className="dropdown-item preview-item">
+                      <div className="preview-thumbnail">
+                        {/* <img
+                          src="../assets/images/faces/face4.jpg"
+                          alt="image"
+                          className="profile-pic"
+                        /> */}
+                      </div>
+                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                          Bet History
+                        </h6>
+                        {/* <p className="text-gray mb-0"> 1 Minutes ago </p> */}
+                      </div>
+                    </a>
+
+                    <div className="dropdown-divider" />
+                    <a className="dropdown-item preview-item">
+                      <div className="preview-thumbnail">
+                        {/* <img
+                          src="/assets/images/faces/face2.jpg"
+                          alt="image"
+                          className="profile-pic"
+                        /> */}
+                      </div>
+                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                          Withdraw History
+                        </h6>
+                        {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
+                      </div>
+                    </a>
+                    <div className="dropdown-divider" />
+                    <a className="dropdown-item preview-item">
+                      <div className="preview-thumbnail">
+                        {/* <img
+                          src="assets/img/icons/rupee_2.png"
+                          alt="deposit"
+                          // // width={"12px"}
+                          // style={{width:}}
+                        /> */}
+                      </div>
+                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                          Deposit History
+                        </h6>
+                        {/* <p className="text-gray mb-0"> 18 Minutes ago </p> */}
+                      </div>
+                    </a>
+                    {/* <div className="dropdown-divider" />
+                    <h6 className="p-3 mb-0 text-center">4 new messages</h6> */}
+                  </div>
                 </li>
+                {/* Profile dropdown ends */}
                 {/* 
   <li>
     <div class="user-icon ms-2">
