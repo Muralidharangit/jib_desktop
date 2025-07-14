@@ -20,8 +20,8 @@ const HowToPlay = () => {
         {/* Sidebar Nav Ends */}
         <div className="main-panel">
           <div className="content-wrapper">
-            <div className="max-1250 mx-auto"></div>
-            <div className="h-100 d-flex justify-content-evenly flex-column">
+            <div className="max-1250 mx-auto">
+     <div className="h-100 d-flex justify-content-evenly flex-column">
               <div className="pt-3 pb-2 ">
                 <div className="breadcrumb">
                   <nav aria-label="breadcrumb">
@@ -66,7 +66,7 @@ const HowToPlay = () => {
                 <h2 className="persona_info_heading">
                   How we use customers’ personal information:
                 </h2>
-                <ul className="personal_info_list">
+                <ul className="personal_info_list text-white">
                   <li>
                     The main purpose of collecting and using players’ personal
                     information is to improve the quality of customer service.
@@ -113,6 +113,8 @@ const HowToPlay = () => {
                 </p>
               </section>
             </div>
+            </div>
+       
           </div>
           <BottomFooter />
           <div className="h-100 w-100 mb-5"></div>
