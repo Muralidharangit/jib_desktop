@@ -1096,7 +1096,12 @@ function Home() {
                                     "linear-gradient(to left, rgb(255 70 42 / 30%), transparent 75%) !important",
                                 }}
                               >
-                                <div className="flex-column d-flex">
+                                <div
+                                  className="flex-column d-flex"
+                                  onClick={() =>
+                                    navigate(`/filtered-games?type=card`)
+                                  }
+                                >
                                   <span className="text-white fw-500 fs-13  py-2 px-1">
                                     Casino
                                   </span>
@@ -1116,9 +1121,14 @@ function Home() {
                                     "linear-gradient(to left, rgb(35 105 157 / 44%), transparent 75%) !important",
                                 }}
                               >
-                                <div className="flex-column d-flex">
+                                <div
+                                  className="flex-column d-flex"
+                                  onClick={() =>
+                                    navigate(`/filtered-games?type=instant`)
+                                  }
+                                >
                                   <span className="text-white fw-500 fs-13  py-2 px-1">
-                                    Sports
+                                    Instant
                                   </span>
                                   <img
                                     src="assets/img/sports.png"
@@ -1138,7 +1148,12 @@ function Home() {
                                         "linear-gradient(to left, rgb(181 114 28 / 30%), transparent 60%) !important",
                                     }}
                                   >
-                                    <div className="flex-column d-flex">
+                                    <div
+                                      className="flex-column d-flex"
+                                      onClick={() =>
+                                        navigate(`/filtered-games?type=lottery`)
+                                      }
+                                    >
                                       <span className="text-white fw-500 fs-13 py-2 px-1">
                                         Lottery
                                       </span>
@@ -1159,9 +1174,14 @@ function Home() {
                                         "linear-gradient(to left, rgb(123 64 14 / 49%), transparent 75%) !important",
                                     }}
                                   >
-                                    <div className="flex-column d-flex">
+                                    <div
+                                      className="flex-column d-flex"
+                                      onClick={() =>
+                                        navigate(`/filtered-games?type=slots`)
+                                      }
+                                    >
                                       <span className="text-white fw-500 fs-13  py-2 px-1">
-                                        Racing
+                                        Slot
                                       </span>
                                       <img
                                         src="assets/img/horse.png"
@@ -1178,10 +1198,13 @@ function Home() {
                                       backgroundImage:
                                         "linear-gradient(to left, rgb(190 191 183 / 27%), transparent 75%) !important",
                                     }}
+                                    onClick={() =>
+                                      navigate(`/filtered-games?type=dice`)
+                                    }
                                   >
                                     <div className="flex-column d-flex">
                                       <span className="text-white fw-500 fs-13  py-2 px-1">
-                                        UpDown
+                                        Dice
                                       </span>
                                       <img
                                         src="assets/img/up.png"
@@ -1198,6 +1221,9 @@ function Home() {
                                       backgroundImage:
                                         "linear-gradient(to left, rgb(123 64 14 / 49%), transparent 75%) !important",
                                     }}
+                                    onClick={() =>
+                                      navigate(`/filtered-games?type=bingo`)
+                                    }
                                   >
                                     <div className="flex-column d-flex">
                                       <span className="text-white fw-500 fs-13  py-2 px-1">
@@ -1805,13 +1831,6 @@ function Home() {
                                         <p>100% Crash Power Bonus</p>
                                       </span>
                                     </div>
-                                    {/* <div className="bonus_sec_img">
-                        <img
-                          src="https://upload.4rabet4.com/storage/239257/PNG_75-Crash-Power-Bonus-(1)-1-(1).png"
-                          alt="img"
-                          className="img-fluid rounded"
-                        />
-                      </div> */}
                                   </div>
                                   {/* Bottom section with timer and buttons */}
                                   <div className="bonusBlock_other__bottom p-2">
