@@ -585,7 +585,7 @@ const FilteredGamesPage = () => {
                               <img
                                 src="assets/img/notification/img_2.png"
                                 alt="unauth"
-                                className="w-75"
+                                className="w-25"
                               />
                               <p className="text-white text-center">
                                 No games available.

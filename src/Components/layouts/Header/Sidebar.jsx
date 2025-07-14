@@ -65,10 +65,25 @@ const Sidebar = () => {
           </li> */}
           <li className="nav-item">
             <Link to="/filtered-games?type=card" className="nav-link">
-              <span className="menu-title">Card Games</span>
+              <span className="menu-title">Live Casino</span>
               <i className="fi fi-rr-playing-cards menu-icon" />
             </Link>
           </li>
+          <li className="nav-item">
+            <Link to="/filtered-games?type=crash" className="nav-link">
+              <span className="menu-title">Crash Games</span>
+              <i class="fa-solid fa-explosion  menu-icon"></i>
+            </Link>
+          </li>
+
+          {/* <li className="nav-item">
+            <Link to="/filtered-games?type=hot" className="nav-link">
+              <span className="menu-title">Hot Games</span>
+              <i class="fa-solid fa-fire menu-icon"></i>
+            </Link>
+          </li> */}
+
+          {/* <i class="fa-solid fa-fire"></i> */}
           <li className="nav-item">
             <Link to={routes.games.providers} className="nav-link">
               <span className="menu-title">providers</span>
