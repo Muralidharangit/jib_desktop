@@ -4108,6 +4108,7 @@ li.nav-item button {
 
 .preview-list .preview-item:hover {
   background: var(--bs-tertiary-bg);
+  background: #1e2022;
 }
 
 .preview-list .preview-item .form-check {
@@ -5467,4 +5468,12 @@ nav.sidebar.sidebar-offcanvas.open
   flex-grow: 1;
   /* background: #000; */
   height: 100%;
+}
+
+.card.bg-cardtrans.p-1 {
+  height: 100%;
+}
+
+.w-45 {
+  width: 45%;
 }
