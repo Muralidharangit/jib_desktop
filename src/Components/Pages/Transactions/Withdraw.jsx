@@ -5,105 +5,110 @@ import BottomFooter from "../../layouts/footer/BottomFooter";
 import Footer from "../../layouts/footer/Footer";
 
 function Withdraw() {
-
   const [bankDetails, setbankDetails] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState("all");
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-
-
-
-   useEffect(() => {
-      const fetchWithdrawHistory = async () => {
-        const token = localStorage.getItem("token");
-  
-        if (!token) {
-          setError("Authentication error. Please log in again.");
-          setLoading(false);
-          return;
-        }
-  
-        try {
-          const response = await axios.get(`${BASE_URL}/player/get-bank`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-
-          
-        // console.log(response.data);
-
-          // console.log(response.data.withdrawHistory)
-         
-          if (response.data.status === "success" && Array.isArray(response.data.playerBank)) {
-            setbankDetails(response.data.playerBank);
-          } else {
-            setError(response.data.msg || "Failed to load withdraw history.");
-          }
-        } catch (err) {
-          setError("Something went wrong. Please try again.");
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchWithdrawHistory();
-    }, []);
-
-
-
-    // Toggle Bank Status
-    const toggleBankStatus = async (bank_id, currentStatus) => {
+  useEffect(() => {
+    const fetchWithdrawHistory = async () => {
       const token = localStorage.getItem("token");
+
       if (!token) {
         setError("Authentication error. Please log in again.");
+        setLoading(false);
         return;
       }
-    
-      const newStatus = currentStatus === "1" ? "0" : "1"; // Toggle status
-      const payload = {
-        bank_id: bank_id,  // Ensure correct key name
-        status: newStatus,  // Ensure correct value
-      };
-    
-      // console.log("Sending payload:", payload);
-    
-      try {
-        // const response = await axios.get(
-        //   `${BASE_URL}/player/change-bank-status`, 
-        //   payload,
-        //   {
-        //     headers: { 
-        //       Authorization: `Bearer ${token}`, 
-        //       "Content-Type": "application/json",
-        //     },
-        //   }
-        // );
 
-        const response = await axios.get(`${BASE_URL}/player/change-bank-status`, {
-          params: { bank_id, status: newStatus }, // <-- Pass data as query parameters
+      try {
+        const response = await axios.get(`${BASE_URL}/player/get-bank`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        
-    
-        // console.log("API Response:", response.data);
-    
-        if (response.data.status === "success") {
-          setbankDetails((prevDetails) =>
-            prevDetails.map((bank) =>
-              bank.id === bank_id ? { ...bank, status: newStatus } : bank
-            )
-          );
+
+        // console.log(response.data);
+
+        // console.log(response.data.withdrawHistory)
+
+        if (
+          response.data.status === "success" &&
+          Array.isArray(response.data.playerBank)
+        ) {
+          setbankDetails(response.data.playerBank);
         } else {
-          alert(response.data.message || "Failed to update status.");
+          setError(response.data.msg || "Failed to load withdraw history.");
         }
       } catch (err) {
-        console.error("API Error:", err.response ? err.response.data : err.message);
-        alert(`Error: ${err.response ? err.response.data.message : "Failed to update status"}`);
+        setError("Something went wrong. Please try again.");
+      } finally {
+        setLoading(false);
       }
     };
 
-  
+    fetchWithdrawHistory();
+  }, []);
+
+  // Toggle Bank Status
+  const toggleBankStatus = async (bank_id, currentStatus) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Authentication error. Please log in again.");
+      return;
+    }
+
+    const newStatus = currentStatus === "1" ? "0" : "1"; // Toggle status
+    const payload = {
+      bank_id: bank_id, // Ensure correct key name
+      status: newStatus, // Ensure correct value
+    };
+
+    // console.log("Sending payload:", payload);
+
+    try {
+      // const response = await axios.get(
+      //   `${BASE_URL}/player/change-bank-status`,
+      //   payload,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+
+      const response = await axios.get(
+        `${BASE_URL}/player/change-bank-status`,
+        {
+          params: { bank_id, status: newStatus }, // <-- Pass data as query parameters
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // console.log("API Response:", response.data);
+
+      if (response.data.status === "success") {
+        setbankDetails((prevDetails) =>
+          prevDetails.map((bank) =>
+            bank.id === bank_id ? { ...bank, status: newStatus } : bank
+          )
+        );
+      } else {
+        alert(response.data.message || "Failed to update status.");
+      }
+    } catch (err) {
+      console.error(
+        "API Error:",
+        err.response ? err.response.data : err.message
+      );
+      alert(
+        `Error: ${
+          err.response ? err.response.data.message : "Failed to update status"
+        }`
+      );
+    }
+  };
+
   return (
     <div>
       {/* hedaer-end */}
@@ -225,37 +230,30 @@ function Withdraw() {
                     <div className="card-body p-2">
                       {/*  Details Starts */}
                       <div className>
-
-
-
-
-                      {loading ? (
-                  <p className="text-white">Loading...</p>
-                ) : error ? (
-                  <p className="text-danger">{error}</p>
-                ) : bankDetails.length > 0 ? (
-                  bankDetails.map((bank) => (
-                    <div className="bet-card" key={bank.id} >
-
-
-           
-                            {/* card 1 Starts */}
-                            <div className="d-flex justify-content-between border rounded mt-2 py-2 px-2">
-                          <div className="d-flex">
-                            {/* input icon starts */}
-                            <div className="px-2 py-1">
-                              <div className="form-check px-3">
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="flexRadioDefault"
-                                  id="flexRadioDefault1"
-                                />
-                              </div>
-                            </div>
-                            {/* bank Details Starts */}
-                            <div>
-                              {/* <div>
+                        {loading ? (
+                          <p className="text-white">Loading...</p>
+                        ) : error ? (
+                          <p className="text-danger">{error}</p>
+                        ) : bankDetails.length > 0 ? (
+                          bankDetails.map((bank) => (
+                            <div className="bet-card" key={bank.id}>
+                              {/* card 1 Starts */}
+                              <div className="d-flex justify-content-between border rounded mt-2 py-2 px-2">
+                                <div className="d-flex">
+                                  {/* input icon starts */}
+                                  <div className="px-2 py-1">
+                                    <div className="form-check px-3">
+                                      <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="flexRadioDefault"
+                                        id="flexRadioDefault1"
+                                      />
+                                    </div>
+                                  </div>
+                                  {/* bank Details Starts */}
+                                  <div>
+                                    {/* <div>
                                 <p className="mb-0 text-grey">Bank Name</p>
                                 <h6>{bank.bank_name || "N/A"}</h6>
                               </div>
@@ -272,34 +270,53 @@ function Withdraw() {
                                 <h6>{bank.ifsc_code || "N/A"}</h6>
                               </div> */}
 
-           <h6>Payment Method: {bank.payment_method?.name || "N/A"}</h6>
-            {bank.payment_method?.name === "UPI" ? (
-              <p><strong>UPI ID:</strong> {bank.upi_id || "N/A"}</p>
-            ) : (
-              <>
-               <div>
-                                <p className="mb-0 text-grey">Bank Name</p>
-                                <h6>{bank.bank_name || "N/A"}</h6>
-                              </div>
-                              <div>
-                                <p className="mb-0 text-grey">Account Holder:</p>
-                                <h6> {bank.account_holder_name || "N/A"}</h6>
-                              </div>
-                              <div>
-                                <p className="mb-0 text-grey">Account Number:</p>
-                                <h6>{bank.account_number || "N/A"}</h6>
-                              </div>
-                              <div>
-                                <p className="mb-0 text-grey">IFSC Code</p>
-                                <h6>{bank.ifsc_code || "N/A"}</h6>
-                              </div>
-              </>
-            )}
-                            </div>
-                          </div>
-                          <div className>
-                            {/* <i class="ri-edit-box-fill fs-1 text-blue"></i> */}
-                            {/* <i
+                                    <h6>
+                                      Payment Method:{" "}
+                                      {bank.payment_method?.name || "N/A"}
+                                    </h6>
+                                    {bank.payment_method?.name === "UPI" ? (
+                                      <p>
+                                        <strong>UPI ID:</strong>{" "}
+                                        {bank.upi_id || "N/A"}
+                                      </p>
+                                    ) : (
+                                      <>
+                                        <div>
+                                          <p className="mb-0 text-grey">
+                                            Bank Name
+                                          </p>
+                                          <h6>{bank.bank_name || "N/A"}</h6>
+                                        </div>
+                                        <div>
+                                          <p className="mb-0 text-grey">
+                                            Account Holder:
+                                          </p>
+                                          <h6>
+                                            {" "}
+                                            {bank.account_holder_name || "N/A"}
+                                          </h6>
+                                        </div>
+                                        <div>
+                                          <p className="mb-0 text-grey">
+                                            Account Number:
+                                          </p>
+                                          <h6>
+                                            {bank.account_number || "N/A"}
+                                          </h6>
+                                        </div>
+                                        <div>
+                                          <p className="mb-0 text-grey">
+                                            IFSC Code
+                                          </p>
+                                          <h6>{bank.ifsc_code || "N/A"}</h6>
+                                        </div>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className>
+                                  {/* <i class="ri-edit-box-fill fs-1 text-blue"></i> */}
+                                  {/* <i
                               className="ri-file-edit-line fs-1 text-white"
                               data-bs-toggle="modal"
                               data-bs-target="#Edit_bank_pop_up"
@@ -310,35 +327,33 @@ function Withdraw() {
                               data-bs-target="#delete_pop_up"
                             /> */}
 
-                            {/* Status Button */}
-            <button
-              className={`btn ${bank.status === "1" ? "btn-success" : "btn-danger"}`}
-              onClick={() => toggleBankStatus(bank.id, bank.status)}
-            >
-              {bank.status === "1" ? "Active" : "Inactive"}
-            </button>
-                          </div>
-                        </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-white">No Withdraw History Found</p>
-                )}
-
-
-
-
-
-
-
-
-                  
-                      
+                                  {/* Status Button */}
+                                  <button
+                                    className={`btn ${
+                                      bank.status === "1"
+                                        ? "btn-success"
+                                        : "btn-danger"
+                                    }`}
+                                    onClick={() =>
+                                      toggleBankStatus(bank.id, bank.status)
+                                    }
+                                  >
+                                    {bank.status === "1"
+                                      ? "Active"
+                                      : "Inactive"}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-white">
+                            No Withdraw History Found
+                          </p>
+                        )}
                       </div>
                       {/*  Details ends */}
 
-
-                      
                       <div className="d-flex justify-content-center">
                         <button
                           type="button"
@@ -505,28 +520,16 @@ function Withdraw() {
                   </div>
                   {/* card 3 Starts */}
                 </div>
-
-               
               </div>
 
               <BottomFooter />
               <Footer />
-
-
-
-
-
-     
-      </div>
             </div>
-        
+          </div>
+
           {/* Header  Ends */}
         </div>
-
-      
       </section>
-
-     
     </div>
   );
 }

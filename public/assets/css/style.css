@@ -5477,3 +5477,17 @@ nav.sidebar.sidebar-offcanvas.open
 .w-45 {
   width: 45%;
 }
+
+@media (min-width: 1156px) {
+  .wizard .nav-tabs:after {
+    content: "";
+    /* width: 80%; */
+    width: 68%;
+    border-bottom: solid 2px #ccc;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    top: 26%;
+    z-index: -1;
+  }
+}

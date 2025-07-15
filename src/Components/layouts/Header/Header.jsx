@@ -7,9 +7,12 @@ import { toast, ToastContainer } from "react-toastify";
 import { Images } from "./constants/images";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 const StickyHeader = ({ onToggleSidebar }) => {
-  console.log("onToggleSidebar", onToggleSidebar);
+  const [loading, setLoading] = useState(false);
+  // console.log("onToggleSidebar", onToggleSidebar);
 
-  const { user, profile, avatar, portalSettings } = useContext(AuthContext); // ✅ Get user authentication state
+  const { user, profile, avatar, portalSettings, isLoading, logout, authType } =
+    useContext(AuthContext); // ✅ Get user authentication state
+
   const [isSticky, setIsSticky] = useState(false);
   const navigate = useNavigate();
 
@@ -115,6 +118,31 @@ const StickyHeader = ({ onToggleSidebar }) => {
 
   const handleToggleSidebar = () => {
     document.body.classList.toggle("sidebar-icon-only");
+  };
+
+  const handleSecureRoute = async (route) => {
+    const token = user?.token;
+    if (!token) {
+      toast.error("Session expired.");
+      logout(navigate);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await verifyToken(token);
+      if (res.status === "success") {
+        navigate(route);
+      } else {
+        toast.error("Invalid session.");
+        logout(navigate);
+      }
+    } catch {
+      toast.error("Token check failed.");
+      logout(navigate);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <SkeletonTheme baseColor="#313131" highlightColor="#525252">
@@ -284,14 +312,19 @@ const StickyHeader = ({ onToggleSidebar }) => {
                   <div className="d-flex justify-content-center align-items-center mx-2">
                     {/* Coin Box */}
                     {profile ? (
-                      <div className="coin-box d-flex align-items-center px-2 py-1 rounded-pill">
+                      <div className="d-flex align-items-center px-2 py-1 rounded-pill">
                         <li>
                           <div className="deposit_btn_container">
                             <p className="text-light mb-0 px-3">
                               <i className="fi fi-rs-coins" /> ₹{" "}
                               {Number(profile?.chips).toFixed(2)}
                             </p>
-                            <button className="btn  btn-index w-100 deposit-btn">
+                            <button
+                              className="btn  btn-index w-100 deposit-btn"
+                              onClick={() =>
+                                handleSecureRoute(routes.transactions.deposit)
+                              }
+                            >
                               Deposit
                             </button>
                           </div>
@@ -299,7 +332,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       </div>
                     ) : (
                       <Skeleton height={32} width={120} borderRadius={30} />
-                    )} 
+                    )}
 
                     {/* Avatar */}
                     {/* <div
@@ -468,7 +501,12 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(routes.transactions.deposit)
+                              }
+                            >
                               Deposit
                             </h6>
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
@@ -486,7 +524,12 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(routes.transactions.withdraw)
+                              }
+                            >
                               Withdraw
                             </h6>
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
@@ -504,7 +547,12 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(routes.games.history)
+                              }
+                            >
                               Bet History
                             </h6>
                             {/* <p className="text-gray mb-0"> 1 Minutes ago </p> */}
@@ -521,7 +569,14 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions.withdrawHistory
+                                )
+                              }
+                            >
                               Withdraw History
                             </h6>
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
@@ -538,7 +593,14 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions.depositHistory
+                                )
+                              }
+                            >
                               Deposit History
                             </h6>
                             {/* <p className="text-gray mb-0"> 18 Minutes ago </p> */}

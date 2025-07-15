@@ -6,6 +6,8 @@ import { withdrawHistoryPage } from "../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import PaginatedData from "../../Pagination/PaginatedData";
+import StickyHeader from "../../../layouts/Header/Header";
+import Sidebar from "../../../layouts/Header/Sidebar";
 
 const WithdrawHistory = () => {
   const [withdrawHistory, setWithdrawHistory] = useState([]);
@@ -13,6 +15,7 @@ const WithdrawHistory = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const itemsPerPage = 10;
 
   const totalPages = Math.ceil(
@@ -98,12 +101,22 @@ const WithdrawHistory = () => {
 
   return (
     <div>
-      <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-      <section className="container position-relative">
-        <div className="h-100">
-          <div className="pt-3 pb-2">
-            <div className="row px-2">
-              {/*
+      {/* header  */}
+      <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      {/* header end */}
+      {/* <ToastContainer position="top-right" autoClose={5000} theme="dark" /> */}
+      <section className="container-fluid page-body-wrapper">
+        {/* Sidebar Nav Starts */}
+        <Sidebar />
+        {/* Sidebar Nav Ends */}
+
+        <div className="main-panel">
+          <div className="content-wrapper">
+            <div className="max-1250 mx-auto">
+              <div className="h-100">
+                <div className="pt-3 pb-2">
+                  <div className="row px-2">
+                    {/*
             <div className="d-flex align-items-center position-relative py-2 px-0">
            
                 <div className="d-flex justify-content-between align-items-center px-0">
@@ -121,32 +134,32 @@ const WithdrawHistory = () => {
                 </h5>
                 
               </div>*/}
-              {/* header Starts */}
-              <div className="d-flex align-items-center justify-content-between position-relative  px-0">
-                {/* Back Button on Left */}
-                <div className="d-flex justify-content-between align-items-center px-0">
-                  <button
-                    className="go_back_btn bg-grey"
-                    onClick={() => window.history.back()}
-                  >
-                    <i className="ri-arrow-left-s-line text-white fs-20" />
-                  </button>
-                </div>
+                    {/* header Starts */}
+                    <div className="d-flex align-items-center justify-content-between position-relative  px-0">
+                      {/* Back Button on Left */}
+                      <div className="d-flex justify-content-between align-items-center px-0">
+                        {/* <button
+                          className="go_back_btn bg-grey"
+                          onClick={() => window.history.back()}
+                        >
+                          <i className="ri-arrow-left-s-line text-white fs-20" />
+                        </button> */}
+                      </div>
 
-                {/* Centered Title */}
-                <h5 className="m-0 text-white fs-16">Withdraw History</h5>
-                <div className="d-flex justify-content-between align-items-center px-0">
-                  <button
-                    className="go_back_btn bg-grey"
-                    onClick={fetchWithdrawHistory}
-                  >
-                    <i class="fa-solid fa-arrows-rotate text-white fs-16"></i>
-                  </button>
-                </div>
-              </div>
-              {/* header Ends */}
+                      {/* Centered Title */}
+                      <h5 className="m-0 text-white fs-16">Withdraw History</h5>
+                      <div className="d-flex justify-content-between align-items-center px-0">
+                        <button
+                          className="go_back_btn bg-grey"
+                          onClick={fetchWithdrawHistory}
+                        >
+                          <i class="fa-solid fa-arrows-rotate text-white fs-16"></i>
+                        </button>
+                      </div>
+                    </div>
+                    {/* header Ends */}
 
-              {/* <div className="d-flex justify-content-between align-items-center px-0">
+                    {/* <div className="d-flex justify-content-between align-items-center px-0">
                 <button
                   className="go_back_btn"
                   onClick={() => window.history.back()}
@@ -155,11 +168,11 @@ const WithdrawHistory = () => {
                 </button>
               </div> */}
 
-              {/* <div className="d-flex justify-content-between"> */}
-              {/* <div className="my-2">
+                    {/* <div className="d-flex justify-content-between"> */}
+                    {/* <div className="my-2">
                   <h2 className="text-white fs-20">Withdraw History</h2>
                 </div> */}
-              {/* <p
+                    {/* <p
                   className="btn btn-sm btn-outline-info"
                   onClick={fetchWithdrawHistory}
                 >
@@ -167,7 +180,7 @@ const WithdrawHistory = () => {
                 </p>
               </div> */}
 
-              {/* <div className="nav nav-pills flex-wrap" id="latest-bet-tabs">
+                    {/* <div className="nav nav-pills flex-wrap" id="latest-bet-tabs">
                 {[
                   "all",
                   "pending",
@@ -188,67 +201,69 @@ const WithdrawHistory = () => {
                 ))}
               </div> */}
 
-              <div className="overflow-auto px-0 mt-4">
-                <div
-                  className="nav nav-pills flex-nowrap gap-2 scroll-hidden rounded-2"
-                  id="latest-bet-tabs"
-                  style={{
-                    overflowX: "auto",
-                    whiteSpace: "nowrap",
-                    // background: "#192432",
-                  }}
-                >
-                  {[
-                    "all",
-                    "pending",
-                    "processing",
-                    "verified",
-                    "rejected",
-                    "canceled",
-                  ].map((tab) => (
-                    <button
-                      key={tab}
-                      className={`nav-link latest_bet_btn ${
-                        selectedTab === tab ? "active" : ""
-                      }`}
-                      style={{ padding: "2px 12px" }}
-                      onClick={() => setSelectedTab(tab)}
-                    >
-                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="tab-content p-0 mt-2 mb-3">
-                {loading ? (
-                  <p className="text-white text-center mt-4">Loading...</p>
-                ) : error ? (
-                  <>
-                    <p className="text-danger">{error}</p>
-                    <div className="d-flex flex-column align-content-center">
-                      <button
-                        className="btn btn-warning mt-2"
-                        onClick={fetchWithdrawHistory}
+                    <div className="overflow-auto px-0 mt-4">
+                      <div
+                        className="nav nav-pills flex-nowrap gap-2 scroll-hidden rounded-2"
+                        id="latest-bet-tabs"
+                        style={{
+                          overflowX: "auto",
+                          whiteSpace: "nowrap",
+                          // background: "#192432",
+                        }}
                       >
-                        Retry
-                      </button>
-                      <img
-                        src="https://cdni.iconscout.com/illustration/premium/thumb/unauthorized-access-illustration-download-in-svg-png-gif-file-formats--hacker-attack-cyber-intrusion-security-breach-data-pack-crime-illustrations-7706304.png"
-                        alt="unauth"
-                        className="w-75"
-                      />
+                        {[
+                          "all",
+                          "pending",
+                          "processing",
+                          "verified",
+                          "rejected",
+                          "canceled",
+                        ].map((tab) => (
+                          <button
+                            key={tab}
+                            className={`nav-link latest_bet_btn ${
+                              selectedTab === tab ? "active" : ""
+                            }`}
+                            style={{ padding: "2px 12px" }}
+                            onClick={() => setSelectedTab(tab)}
+                          >
+                            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </>
-                ) : filteredHistory.length > 0 ? (
-                  filteredHistory
-                    .slice(
-                      (currentPage - 1) * itemsPerPage,
-                      currentPage * itemsPerPage
-                    )
-                    .map((withdraw) => (
-                      <div className="bet-card" key={withdraw.id}>
-                        {/* <div className="mybet-single-card p-3">
+
+                    <div className="tab-content p-0 mt-2 mb-3">
+                      {loading ? (
+                        <p className="text-white text-center mt-4">
+                          Loading...
+                        </p>
+                      ) : error ? (
+                        <>
+                          <p className="text-danger">{error}</p>
+                          <div className="d-flex flex-column align-content-center">
+                            <button
+                              className="btn btn-warning mt-2"
+                              onClick={fetchWithdrawHistory}
+                            >
+                              Retry
+                            </button>
+                            <img
+                              src="https://cdni.iconscout.com/illustration/premium/thumb/unauthorized-access-illustration-download-in-svg-png-gif-file-formats--hacker-attack-cyber-intrusion-security-breach-data-pack-crime-illustrations-7706304.png"
+                              alt="unauth"
+                              className="w-75"
+                            />
+                          </div>
+                        </>
+                      ) : filteredHistory.length > 0 ? (
+                        filteredHistory
+                          .slice(
+                            (currentPage - 1) * itemsPerPage,
+                            currentPage * itemsPerPage
+                          )
+                          .map((withdraw) => (
+                            <div className="bet-card" key={withdraw.id}>
+                              {/* <div className="mybet-single-card p-3">
                           <ul className="bet-details">
                             <li>
                               <span>Withdraw Amount</span>
@@ -286,40 +301,43 @@ const WithdrawHistory = () => {
                           )}
                         </div> */}
 
-                        <div
-                          className="mybet-single-card"
-                          style={{ padding: "15px 11px 6px", marginTop: "6px" }}
-                        >
-                          <div className="d-flex justify-content-between">
-                            <div className="d-flex justify-content-center align-items-center">
-                              <div className="bg-secondary py-2 px-3 rounded-2">
-                                <i
-                                  class="fa-solid fa-arrow-up"
-                                  style={{ transform: "rotate(45deg)" }}
-                                ></i>
-                              </div>
-                              {/* ✅ Add margin-start (left) using ms-3 */}
-                            </div>
-
-                            <div className="d-flex align-items-end flex-column">
-                              <h4 className="mb-1 amount-fs-size">
-                                ₹ {withdraw.amount}
-                              </h4>
-
-                              <span
-                                className={`fw-bold ${
-                                  withdraw.status === "pending"
-                                    ? "history_badge pending_badge"
-                                    : withdraw.status === "verified"
-                                    ? "history_badge success_badge"
-                                    : withdraw.status === "processing"
-                                    ? "history_badge processing_badge"
-                                    : "history_badge badge_danger"
-                                }`}
+                              <div
+                                className="mybet-single-card"
+                                style={{
+                                  padding: "15px 11px 6px",
+                                  marginTop: "6px",
+                                }}
                               >
-                                {withdraw.status}
-                              </span>
-                              {/* <p className="fs-11 mb-0 text-grey mt-1">
+                                <div className="d-flex justify-content-between">
+                                  <div className="d-flex justify-content-center align-items-center">
+                                    <div className="bg-secondary py-2 px-3 rounded-2">
+                                      <i
+                                        class="fa-solid fa-arrow-up"
+                                        style={{ transform: "rotate(45deg)" }}
+                                      ></i>
+                                    </div>
+                                    {/* ✅ Add margin-start (left) using ms-3 */}
+                                  </div>
+
+                                  <div className="d-flex align-items-end flex-column">
+                                    <h4 className="mb-1 amount-fs-size">
+                                      ₹ {withdraw.amount}
+                                    </h4>
+
+                                    <span
+                                      className={`fw-bold ${
+                                        withdraw.status === "pending"
+                                          ? "history_badge pending_badge"
+                                          : withdraw.status === "verified"
+                                          ? "history_badge success_badge"
+                                          : withdraw.status === "processing"
+                                          ? "history_badge processing_badge"
+                                          : "history_badge badge_danger"
+                                      }`}
+                                    >
+                                      {withdraw.status}
+                                    </span>
+                                    {/* <p className="fs-11 mb-0 text-grey mt-1">
                                 {new Date(withdraw.created_at).toLocaleString(
                                   "en-GB",
                                   {
@@ -332,59 +350,63 @@ const WithdrawHistory = () => {
                                   }
                                 )}
                               </p> */}
-                              <p className="fs-11 mb-0 text-grey mt-1">
-                                {new Date(withdraw.created_date).toLocaleString(
-                                  "en-GB",
-                                  {
-                                    day: "2-digit",
-                                    month: "short",
-                                    year: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                  }
-                                )}
-                              </p>
-                              {/* withdraw */}
+                                    <p className="fs-11 mb-0 text-grey mt-1">
+                                      {new Date(
+                                        withdraw.created_date
+                                      ).toLocaleString("en-GB", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                      })}
+                                    </p>
+                                    {/* withdraw */}
 
-                              {withdraw.status === "pending" && (
-                                <div className="d-flex justify-content-end">
-                                  <button
-                                    className="btn bg-grey text-white"
-                                    onClick={() =>
-                                      handleWithdrawCancel(withdraw.id)
-                                    }
-                                    style={{
-                                      padding: "0px 17px",
-                                      fontSize: " 13px",
-                                      marginTop: "10px",
-                                    }}
-                                  >
-                                    Cancel Request
-                                  </button>
+                                    {withdraw.status === "pending" && (
+                                      <div className="d-flex justify-content-end">
+                                        <button
+                                          className="btn bg-grey text-white"
+                                          onClick={() =>
+                                            handleWithdrawCancel(withdraw.id)
+                                          }
+                                          style={{
+                                            padding: "0px 17px",
+                                            fontSize: " 13px",
+                                            marginTop: "10px",
+                                          }}
+                                        >
+                                          Cancel Request
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              )}
+                              </div>
                             </div>
-                          </div>
+                          ))
+                      ) : (
+                        <div className="text-center mt-5">
+                          <p className="text-white">
+                            No Withdraw History Found
+                          </p>
                         </div>
-                      </div>
-                    ))
-                ) : (
-                  <div className="text-center mt-5">
-                    <p className="text-white">No Withdraw History Found</p>
-                  </div>
-                )}
+                      )}
 
-                {!loading &&
-                  !error &&
-                  totalPages > 1 &&
-                  filteredHistory.length > 0 && (
-                    <PaginatedData
-                      totalPages={totalPages}
-                      currentPage={currentPage}
-                      setCurrentPage={setCurrentPage}
-                    />
-                  )}
+                      {!loading &&
+                        !error &&
+                        totalPages > 1 &&
+                        filteredHistory.length > 0 && (
+                          <PaginatedData
+                            totalPages={totalPages}
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                          />
+                        )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -156,7 +156,12 @@ const LoginPage = () => {
 
       <div className="pt-3 pb-2 h-100 d-flex align-items-center flex-column justify-content-center w-100 position-top-60">
         <div className="logo d-flex justify-content-center mb-2">
-          <img src={Images.Favlogo} alt="Logo" width="50%" />
+          <img
+            src={Images.Favlogo}
+            alt="Logo"
+            width="50%"
+            style={{ objectFit: "contain" }}
+          />
         </div>
 
         <div className="p-3 d-flex justify-content-start flex-column card-log">
