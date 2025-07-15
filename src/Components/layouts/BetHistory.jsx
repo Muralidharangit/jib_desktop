@@ -4,6 +4,8 @@ import { verifyToken } from "../../API/authAPI";
 import { ToastContainer } from "react-toastify";
 import PaginatedData from "../Pages/Pagination/PaginatedData";
 import { betStatement } from "../../API/betHistory";
+import StickyHeader from "./Header/Header";
+import Sidebar from "./Header/Sidebar";
 
 const BetHistory = () => {
   const [history, setHistory] = useState([]);
@@ -12,6 +14,7 @@ const BetHistory = () => {
   const [selectedTab, setSelectedTab] = useState("all"); // Tabs for "All", "Credits", "Debits"
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // const itemsPerPage = 10;
 
   // const totalPages = Math.ceil(
@@ -68,13 +71,24 @@ const BetHistory = () => {
   }, [history, selectedTab]);
   return (
     <div>
+       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
+      {/* header  */}
+      <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      {/* header end */}
+
       {/* <StickyHeader /> */}
-      <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-      <section className="container position-relative">
-        <div className="h-100">
-          <div className="pt-3 pb-2">
-            <div className="row px-2">
-              {/* <div className="d-flex justify-content-between align-items-center px-0">
+     
+      <div className="container-fluid page-body-wrapper">
+        {/* Sidebar Nav Starts */}
+        <Sidebar />
+        {/* Sidebar Nav Ends */}
+        <div className="main-panel">
+          <div className="content-wrapper">
+            <div className="max-1250 mx-auto">
+              <div className="h-100">
+                <div className="pt-3 pb-2">
+                  <div className="row px-2">
+                    {/* <div className="d-flex justify-content-between align-items-center px-0">
                 <button
                   className="go_back_btn"
                   onClick={() => window.history.back()}
@@ -86,159 +100,168 @@ const BetHistory = () => {
                 <div className="text-white fs-20">Bet History</div>
               </div> */}
 
-              {/* header Starts */}
-              <div className="d-flex align-items-center justify-content-between position-relative  px-0">
-                {/* Back Button on Left */}
-                <div className="d-flex justify-content-between align-items-center px-0">
-                  <button
-                    className="go_back_btn bg-grey"
-                    onClick={() => window.history.back()}
-                  >
-                    <i className="ri-arrow-left-s-line text-white fs-20" />
-                  </button>
-                </div>
+                    {/* header Starts */}
+                    <div className="d-flex align-items-center justify-content-between position-relative  px-0">
+                      {/* Back Button on Left */}
+                      <div className="d-flex justify-content-between align-items-center px-0">
+                        {/* <button
+                          className="go_back_btn bg-grey"
+                          onClick={() => window.history.back()}
+                        >
+                          <i className="ri-arrow-left-s-line text-white fs-20" />
+                        </button> */}
+                      </div>
 
-                {/* Centered Title */}
-                <h5 className="m-0 text-white fs-16">Bet History</h5>
-                <div className="d-flex justify-content-between align-items-center px-0">
-                  <button
-                    className="go_back_btn bg-grey"
-                    onClick={fetchPlayerData}
-                  >
-                    <i class="fa-solid fa-arrows-rotate text-white fs-16"></i>
-                  </button>
-                </div>
-              </div>
-              {/* header Ends */}
-
-              {/* ✅ Tabs Section */}
-              <div className="overflow-auto px-0 mt-4">
-                <div
-                  className="nav nav-pills flex-wrap"
-                  id="transaction-tabs"
-                  style={{
-                    overflowX: "auto",
-                    whiteSpace: "nowrap",
-                    // background: "#192432",
-                  }}
-                >
-                  {["all", "credit", "debit"].map((tab) => (
-                    <button
-                      key={tab}
-                      className={`nav-link latest_bet_btn ${
-                        selectedTab === tab ? "active" : ""
-                      }`}
-                      style={{ padding: "2px 12px" }}
-                      onClick={() => setSelectedTab(tab)}
-                    >
-                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* ✅ Display Filtered Transactions */}
-              <div className="tab-content p-0 mt-2 mb-3">
-                {loading ? (
-                  <p className="text-white text-center mt-4">Loading...</p>
-                ) : error ? (
-                  <>
-                    <p className="text-danger">{error}</p>
-                    <div className="d-flex flex-column align-items-center">
-                      <button
-                        className="btn btn-warning mt-2"
-                        onClick={fetchPlayerData}
-                      >
-                        Retry
-                      </button>
-                      <img
-                        src="assets/img/notification/img_2.png"
-                        alt="unauth"
-                        className="w-75"
-                      />
-                    </div>
-                  </>
-                ) : filteredHistory.length > 0 ? (
-                  filteredHistory.map((transaction) => (
-                    <div className="bet-card" key={transaction.id}>
-                      <div
-                        className="mybet-single-card"
-                        style={{ padding: "15px 11px 6px", marginTop: "6px" }}
-                      >
-                        <div className="d-flex justify-content-between">
-                          <div className="d-flex justify-content-center align-items-center">
-                            <div className="bg-secondary py-2 px-3 rounded-2">
-                              {transaction.type === "DR" ? (
-                                <i
-                                  class="fa-solid fa-arrow-up"
-                                  style={{ transform: "rotate(45deg)" }}
-                                ></i>
-                              ) : (
-                                <i
-                                  class="fa-solid fa-arrow-down"
-                                  style={{ transform: "rotate(45deg)" }}
-                                ></i>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="d-flex align-items-end flex-column">
-                            <h4 className="mb-1 amount-fs-size">
-                              {/* {transaction.id} */}
-                              {transaction.type === "DR"
-                                ? `₹ ${transaction.amount}`
-                                : `₹ ${transaction.amount}`}
-                            </h4>
-
-                            <span
-                              className={`fw-bold ${
-                                transaction.type === "DR"
-                                  ? "history_badge badge_danger"
-                                  : "history_badge success_badge"
-                              }`}
-                            >
-                              {transaction.type === "DR" ? " Debit" : "Credit"}
-                            </span>
-                            <p className="fs-11 mb-0 text-grey mt-0">
-                              {new Date(transaction.created_at).toLocaleString(
-                                "en-GB",
-                                {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: true,
-                                }
-                              )}
-                            </p>
-                          </div>
-                        </div>
+                      {/* Centered Title */}
+                      <h5 className="m-0 text-white fs-16">Bet History</h5>
+                      <div className="d-flex justify-content-between align-items-center px-0">
+                        <button
+                          className="go_back_btn bg-grey"
+                          onClick={fetchPlayerData}
+                        >
+                          <i class="fa-solid fa-arrows-rotate text-white fs-16"></i>
+                        </button>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <p className="text-white">No Bet History Found</p>
-                )}
+                    {/* header Ends */}
 
-                {!loading &&
-                  !error &&
-                  totalPages > 1 &&
-                  filteredHistory.length > 0 && (
-                    <PaginatedData
-                      totalPages={totalPages}
-                      currentPage={currentPage}
-                      setCurrentPage={(page) => {
-                        setCurrentPage(page);
-                        fetchPlayerData(page);
-                      }}
-                    />
-                  )}
+                    {/* ✅ Tabs Section */}
+                    <div className="overflow-auto px-0 mt-4">
+                      <div
+                        className="nav nav-pills flex-wrap"
+                        id="transaction-tabs"
+                        style={{
+                          overflowX: "auto",
+                          whiteSpace: "nowrap",
+                          // background: "#192432",
+                        }}
+                      >
+                        {["all", "credit", "debit"].map((tab) => (
+                          <button
+                            key={tab}
+                            className={`nav-link latest_bet_btn ${
+                              selectedTab === tab ? "active" : ""
+                            }`}
+                            style={{ padding: "2px 12px" }}
+                            onClick={() => setSelectedTab(tab)}
+                          >
+                            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* ✅ Display Filtered Transactions */}
+                    <div className="tab-content p-0 mt-2 mb-3">
+                      {loading ? (
+                        <p className="text-white text-center mt-4">
+                          Loading...
+                        </p>
+                      ) : error ? (
+                        <>
+                          <p className="text-danger">{error}</p>
+                          <div className="d-flex flex-column align-items-center">
+                            <button
+                              className="btn btn-warning mt-2"
+                              onClick={fetchPlayerData}
+                            >
+                              Retry
+                            </button>
+                            <img
+                              src="assets/img/notification/img_2.png"
+                              alt="unauth"
+                              className="w-75"
+                            />
+                          </div>
+                        </>
+                      ) : filteredHistory.length > 0 ? (
+                        filteredHistory.map((transaction) => (
+                          <div className="bet-card" key={transaction.id}>
+                            <div
+                              className="mybet-single-card"
+                              style={{
+                                padding: "15px 11px 6px",
+                                marginTop: "6px",
+                              }}
+                            >
+                              <div className="d-flex justify-content-between">
+                                <div className="d-flex justify-content-center align-items-center">
+                                  <div className="bg-secondary py-2 px-3 rounded-2">
+                                    {transaction.type === "DR" ? (
+                                      <i
+                                        class="fa-solid fa-arrow-up"
+                                        style={{ transform: "rotate(45deg)" }}
+                                      ></i>
+                                    ) : (
+                                      <i
+                                        class="fa-solid fa-arrow-down"
+                                        style={{ transform: "rotate(45deg)" }}
+                                      ></i>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="d-flex align-items-end flex-column">
+                                  <h4 className="mb-1 amount-fs-size">
+                                    {/* {transaction.id} */}
+                                    {transaction.type === "DR"
+                                      ? `₹ ${transaction.amount}`
+                                      : `₹ ${transaction.amount}`}
+                                  </h4>
+
+                                  <span
+                                    className={`fw-bold ${
+                                      transaction.type === "DR"
+                                        ? "history_badge badge_danger"
+                                        : "history_badge success_badge"
+                                    }`}
+                                  >
+                                    {transaction.type === "DR"
+                                      ? " Debit"
+                                      : "Credit"}
+                                  </span>
+                                  <p className="fs-11 mb-0 text-grey mt-0">
+                                    {new Date(
+                                      transaction.created_at
+                                    ).toLocaleString("en-GB", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    })}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-white">No Bet History Found</p>
+                      )}
+
+                      {!loading &&
+                        !error &&
+                        totalPages > 1 &&
+                        filteredHistory.length > 0 && (
+                          <PaginatedData
+                            totalPages={totalPages}
+                            currentPage={currentPage}
+                            setCurrentPage={(page) => {
+                              setCurrentPage(page);
+                              fetchPlayerData(page);
+                            }}
+                          />
+                        )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* <BottomFooter /> */}
       {/* <Footer /> */}
