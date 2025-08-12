@@ -20,6 +20,8 @@ import { Images } from "./Header/constants/images";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Sidebar from "./Header/Sidebar";
+import { useQuery } from "@tanstack/react-query";
+import { useProviders } from "../../hooks/fetchProviders ";
 
 function Home() {
   const { isLoading } = useContext(AuthContext);
@@ -34,17 +36,88 @@ function Home() {
   // const [filteredGames, setFilteredGames] = useState([]);
 
   // State for dice games
+  const [isLoadings, setIsLoadings] = useState(true); // Correct placement
+
   const [diceGames, setDiceGames] = useState([]);
   const [isLoadingDice, setIsLoadingDice] = useState(true); // ✅ add this
   const [slotGames, setslotGames] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // const [isLoading, setIsLoading] = useState(true);
   // const [providerlist, setproviderlist] = useState([]);
-
+  const [isLoadingSlot, setIsLoadingSlot] = useState(true); // New loading state
   const iframeRef = useRef(null);
-
+  const [isLoadingBanner, setIsLoadingBanner] = useState(true);
+  const [isLoadingMarquee, setIsLoadingMarquee] = useState(true); // New loading state
+  // const [providerList, setProviderList] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Dummy routes object - replace with your actual routes if different
+  const routes = {
+    games: {
+      all: "/all-games",
+    },
+  };
+
+  const [isLoadingTypes, setIsLoadingTypes] = useState(true);
+
+  // Define your game type data.
+  // This array ensures the skeleton and actual content match in structure and count.
+  const gameTypes = [
+    { name: "Casino", type: "card", imgSrc: "assets/img/css.png" },
+    { name: "Roulette", type: "roulette", imgSrc: "assets/img/casino11.png" },
+    { name: "Crash", type: "crash", imgSrc: "assets/img/crash.png" },
+    { name: "Lottery", type: "lottery", imgSrc: "assets/img/lottery.png" },
+    { name: "Instant", type: "instant", imgSrc: "assets/img/sports.png" },
+    { name: "Slots", type: "slots", imgSrc: "assets/img/horse.png" },
+    { name: "Dice", type: "dice", imgSrc: "assets/img/up.png" },
+  ];
+
+  // banner section
+
+  // You'll need to define this component or integrate it into your existing one
+
+  // Define your static game data for the marquee.
+  // In a real app, this would likely come from an API call.
+  const marqueeGames = [
+    { type: "roulette", imgSrc: "assets/img/turbo/1.png" },
+    { type: "slots", imgSrc: "assets/img/turbo/2.png" },
+    { type: "card", imgSrc: "assets/img/turbo/3.png" },
+    { type: "dice", imgSrc: "assets/img/turbo/4.png" },
+    { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
+    { type: "home", imgSrc: "assets/img/turbo/6.png" }, // Last one navigating to home
+  ];
+
+  // Simulate a loading delay for the marquee content
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingMarquee(false);
+    }, 1000); // Simulate a 1.2-second load time
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
+
+  // State to manage loading status for this section
+  const [isLoadingGames, setIsLoadingGames] = useState(true);
+
+  // Your static game data (replace with API fetch in a real application)
+  const allGamesData = [
+    { type: "roulette", imgSrc: "assets/img/turbo/1.png" },
+    { type: "slots", imgSrc: "assets/img/turbo/2.png" },
+    { type: "card", imgSrc: "assets/img/turbo/3.png" },
+    { type: "dice", imgSrc: "assets/img/turbo/4.png" },
+    { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
+    { type: "general", imgSrc: "assets/img/turbo/6.png", linkTo: routes.home },
+  ];
+
+  const { data: providerList, isLoading_data, isError } = useProviders();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingGames(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     if (location.state?.showLoginSuccess) {
       toast.success("Login successful! 🎉", {
@@ -55,123 +128,138 @@ function Home() {
         pauseOnHover: true,
         draggable: true,
         onClose: () => {
-          // Navigate after toast is closed automatically
           navigate(location.pathname, { replace: true, state: {} });
         },
       });
     }
   }, [location, navigate]);
-  // Fetch All Games Effect
+
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        // const response = await fetch(
-        //   `${BASE_URL}/all-games?is_mobile=1&limit=10&provider=SmartSoft`
-        // );
         const response = await axiosInstance.get(
           `/all-games?is_mobile=1&limit=10&provider=SmartSoft`
         );
-        const data = await response.json();
-        // Debugging step
-        // console.log("All Games API Response:", data);
-        // Ensure data.allGames is an array
-        if (Array.isArray(data.allGames)) {
-          setGames(data.allGames);
-        } else {
-          setGames([]); // fallback
-        }
+        const data = response.data;
+        setGames(Array.isArray(data.allGames) ? data.allGames : []);
       } catch (error) {
         console.error("Error fetching all games:", error);
         setGames([]);
       }
     };
-
     fetchGames();
-  }, []); // No dependency since BASE_URL is constant
+  }, []);
 
-  // Fetch Dice Games Effect
   useEffect(() => {
-    const fetchGameType = async () => {
-      setIsLoadingDice(true); // start loading
+    const fetchDiceGames = async () => {
+      setIsLoadingDice(true);
       try {
         const response = await axiosInstance.get(
           `/all-games?is_mobile=1&limit=10&type=dice`
         );
         const data = response.data;
-
-        if (Array.isArray(data.allGames)) {
-          setDiceGames(data.allGames);
-        } else {
-          setDiceGames([]);
-        }
+        setDiceGames(Array.isArray(data.allGames) ? data.allGames : []);
       } catch (error) {
         console.error("Error fetching dice games:", error);
         setDiceGames([]);
       } finally {
-        setIsLoadingDice(false); // ✅ end loading
+        setIsLoadingDice(false);
       }
     };
-
-    fetchGameType();
+    fetchDiceGames();
   }, []);
-  const [isLoadingSlot, setIsLoadingSlot] = useState(true); // New loading state
-  // Fetch Slot Games Effect
+
   useEffect(() => {
-    const slotGameType = async () => {
+    const fetchSlotGames = async () => {
+      setIsLoadingSlot(true);
       try {
-        setIsLoadingSlot(true); // Set loading to true before fetching
         const response = await axiosInstance.get(
           `/all-games?is_mobile=1&limit=10&type=slots`
         );
         const data = response.data;
-
-        if (Array.isArray(data.allGames)) {
-          setslotGames(data.allGames);
-        } else {
-          setslotGames([]); // fallback
-        }
+        setslotGames(Array.isArray(data.allGames) ? data.allGames : []);
       } catch (error) {
         console.error("Error fetching slot games:", error);
         setslotGames([]);
       } finally {
-        setIsLoadingSlot(false); // Set loading to false after fetching (success or error)
+        setIsLoadingSlot(false);
+      }
+    };
+    fetchSlotGames();
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingBanner(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingTypes(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (showFullScreenGame) {
+        setShowFullScreenGame(false);
+        setSelectedGameUrl(null);
+        setIsLaunchingGame(false);
+
+        const prevPage = sessionStorage.getItem("prevPage");
+        if (prevPage) {
+          navigate(prevPage);
+        }
       }
     };
 
-    slotGameType();
-  }, []); // Empty dependency array if BASE_URL is constant and axiosInstance is stable
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [showFullScreenGame, navigate]);
+
+  // ✅ Conditional rendering inside return
+  if (isLoading_data || isError) {
+    return (
+      <div>
+        {isLoading_data && <p>Loading providers...</p>}
+        {isError && <p>Something went wrong while fetching providers.</p>}
+      </div>
+    );
+  }
 
   // Provider Games Effect
   // / Declare the state at the top:
   // Declare the state at the top:
-  const [providerList, setProviderList] = useState([]);
-  const [isLoadings, setIsLoadings] = useState(true); // Correct placement
 
-  useEffect(() => {
-    const fetchProviderList = async () => {
-      try {
-        setIsLoadings(true); // Set loading to true before the API call
-        const response = await axiosInstance.get(`/providers-list`);
-        const data = response.data;
+  // useEffect(() => {
+  //   const fetchProviderList = async () => {
+  //     try {
+  //       setIsLoadings(true); // Set loading to true before the API call
+  //       const response = await axiosInstance.get(`/providers-list`);
+  //       const data = response.data;
 
-        if (Array.isArray(data.providers)) {
-          const limitedProviders = data.providers.slice(0, 10);
-          setProviderList(limitedProviders);
-        } else {
-          setProviderList([]);
-        }
-      } catch (error) {
-        console.error("Error fetching provider list:", error);
-        setProviderList([]);
-      } finally {
-        setIsLoadings(false); // Set loading to false after the API call completes
-      }
-    };
+  //       if (Array.isArray(data.providers)) {
+  //         const limitedProviders = data.providers.slice(0, 10);
+  //         setProviderList(limitedProviders);
+  //       } else {
+  //         setProviderList([]);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching provider list:", error);
+  //       setProviderList([]);
+  //     } finally {
+  //       setIsLoadings(false); // Set loading to false after the API call completes
+  //     }
+  //   };
 
-    fetchProviderList();
-  }, []); // End of useEffect
+  //   fetchProviderList();
+  // }, []); // End of useEffect
 
-  // Turbo Games Effect
   // Declare the state at the top:
   // const [turboGamesList, setTurboGamesList] = useState([]);
   // const [isLoadingTurbo, setIsLoadingTurbo] = useState(true); // Separate loading state for Turbo Games
@@ -396,27 +484,6 @@ function Home() {
       toast.error("Game launch failed. Try again later.");
     }
   };
-  useEffect(() => {
-    const handlePopState = () => {
-      if (showFullScreenGame) {
-        setShowFullScreenGame(false);
-        setSelectedGameUrl(null);
-        setIsLaunchingGame(false); // ✅ Hide loader when going back
-
-        // Navigate back to saved page (optional)
-        const prevPage = sessionStorage.getItem("prevPage");
-        if (prevPage) {
-          navigate(prevPage);
-        }
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [showFullScreenGame, navigate]);
 
   // const handleFilterClick = async (type) => {
   //   try {
@@ -435,94 +502,6 @@ function Home() {
   // };
 
   // Assuming routes is defined like this:
-
-  // Dummy routes object - replace with your actual routes if different
-  const routes = {
-    games: {
-      all: "/all-games",
-    },
-  };
-
-  const [isLoadingTypes, setIsLoadingTypes] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingTypes(false);
-    }, 1000); // Simulate a 1-second load time
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Define your game type data.
-  // This array ensures the skeleton and actual content match in structure and count.
-  const gameTypes = [
-    { name: "Casino", type: "card", imgSrc: "assets/img/css.png" },
-    { name: "Roulette", type: "roulette", imgSrc: "assets/img/casino11.png" },
-    { name: "Crash", type: "crash", imgSrc: "assets/img/crash.png" },
-    { name: "Lottery", type: "lottery", imgSrc: "assets/img/lottery.png" },
-    { name: "Instant", type: "instant", imgSrc: "assets/img/sports.png" },
-    { name: "Slots", type: "slots", imgSrc: "assets/img/horse.png" },
-    { name: "Dice", type: "dice", imgSrc: "assets/img/up.png" },
-  ];
-
-  // banner section
-
-  // You'll need to define this component or integrate it into your existing one
-
-  const [isLoadingBanner, setIsLoadingBanner] = useState(true);
-
-  // Simulate loading of the banner
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingBanner(false);
-    }, 1000); // Simulate an 800ms load time
-
-    return () => clearTimeout(timer); // Cleanup the timer
-  }, []);
-
-  const [isLoadingMarquee, setIsLoadingMarquee] = useState(true); // New loading state
-
-  // Define your static game data for the marquee.
-  // In a real app, this would likely come from an API call.
-  const marqueeGames = [
-    { type: "roulette", imgSrc: "assets/img/turbo/1.png" },
-    { type: "slots", imgSrc: "assets/img/turbo/2.png" },
-    { type: "card", imgSrc: "assets/img/turbo/3.png" },
-    { type: "dice", imgSrc: "assets/img/turbo/4.png" },
-    { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
-    { type: "home", imgSrc: "assets/img/turbo/6.png" }, // Last one navigating to home
-  ];
-
-  // Simulate a loading delay for the marquee content
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingMarquee(false);
-    }, 1000); // Simulate a 1.2-second load time
-
-    return () => clearTimeout(timer); // Cleanup the timer
-  }, []);
-
-  // State to manage loading status for this section
-  const [isLoadingGames, setIsLoadingGames] = useState(true);
-
-  // Your static game data (replace with API fetch in a real application)
-  const allGamesData = [
-    { type: "roulette", imgSrc: "assets/img/turbo/1.png" },
-    { type: "slots", imgSrc: "assets/img/turbo/2.png" },
-    { type: "card", imgSrc: "assets/img/turbo/3.png" },
-    { type: "dice", imgSrc: "assets/img/turbo/4.png" },
-    { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
-    { type: "general", imgSrc: "assets/img/turbo/6.png", linkTo: routes.home },
-  ];
-
-  // Simulate data fetching with a delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingGames(false); // Set loading to false after the delay
-    }, 1500); // Increased delay slightly for better visual effect (adjust as needed)
-
-    return () => clearTimeout(timer); // Cleanup the timer on unmount
-  }, []); // Effect runs once on component mount
 
   return (
     <>
@@ -1537,6 +1516,21 @@ function Home() {
                         highlightColor="#525252"
                       >
                         <div>
+                          <div>
+                            {/* ✅ Use provider data safely */}
+                            <h2>Providers List</h2>
+                            <div>
+                              {isLoading_data && <div>Loading...</div>}
+                              {isError && <div>Something went wrong.</div>}
+
+                              {!isLoading_data &&
+                                providerList?.length > 0 &&
+                                providerList.map((provider) => (
+                                  <div key={provider.id}>{provider.name}</div>
+                                ))}
+                            </div>
+                          </div>
+
                           {/* Provider running list Header */}
                           <div className="top-matches-title d-flex align-items-center justify-content-between my-3">
                             <div className="d-flex">
@@ -1568,7 +1562,6 @@ function Home() {
                               </Link>
                             </div>
                           </div>
-
                           {/* Provider Swiper */}
                           {isLoadings ? (
                             <swiper-container

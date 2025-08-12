@@ -20,6 +20,7 @@ import {
 } from "../../API/manualGames";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import Sidebar from "./Header/Sidebar";
+import useFilteredGames from "../../hooks/useFilteredGames";
 
 const FilteredGamesPage = () => {
   const [games, setGames] = useState([]);
@@ -46,6 +47,13 @@ const FilteredGamesPage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // const { data, isLoading, isError, refetch } = useFilteredGames({
+  //   type,
+  //   page,
+  //   enabled: !!type,
+  // });
+
   // const navigate = useNavigate();
   // 1️⃣ Handle search input changes
   useEffect(() => {

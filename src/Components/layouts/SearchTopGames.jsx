@@ -7,23 +7,14 @@ import Footer from "./footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import PaginatedData from "../Pages/Pagination/PaginatedData";
-import {
-  manualAllGames,
-  manualBlackJackGames,
-  manualCardGames,
-  manualCrashGames,
-  manualDiceGames,
-  manualHotGames,
-  manualTableGames,
-} from "../../API/manualGames";
+
 import axiosInstance from "../../API/axiosConfig";
-import { Images } from "./Header/constants/images";
-import routes from "../routes/route";
 import { verifyToken } from "../../API/authAPI";
 import AuthContext from "../../Auth/AuthContext";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import Sidebar from "./Header/Sidebar";
+import useAllGames from "../../hooks/useAllGames";
+import useFilteredGames from "../../hooks/useFilteredGames";
 
 const SearchTopGames = () => {
   const [types, setTypes] = useState([]);
@@ -39,7 +30,7 @@ const SearchTopGames = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [searchResults, setSearchResults] = useState([]);
+  // const [searchResults, setSearchResults] = useState([]);
   const [isSearchMode, setIsSearchMode] = useState(false);
 
   const [searchByNameResults, setSearchByNameResults] = useState([]);
@@ -62,17 +53,87 @@ const SearchTopGames = () => {
   const { setProfile } = useContext(AuthContext);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const {
+    data: allGamesData,
+    isLoading: isAllGamesLoading,
+    isFetching: isAllGamesFetching,
+    isError: isAllGamesError,
+  } = useAllGames(page, {
+    enabled: !isSearchMode && selectedType === "all",
+  });
+
+  const {
+    data: filteredData,
+    isLoading: isFilteredLoading,
+    isFetching: isFilteredFetching,
+    isError: isFilteredError,
+  } = useFilteredGames({
+    type: selectedType,
+    page,
+    enabled: !isSearchMode && selectedType !== "all", // only enabled for non-all types
+  });
 
   useEffect(() => {
-    if (isSearchMode) return;
+    if (!isSearchMode && selectedType !== "all" && filteredData) {
+      const { games: fetchedGames, totalPages } = filteredData;
 
-    if (selectedType === "all") {
-      fetchAllGames(page);
-    } else {
-      fetchFilteredGames(selectedType, page);
+      if (page === 1) {
+        setGames(fetchedGames);
+      } else {
+        setGames((prev) => {
+          const combined = [...prev, ...fetchedGames];
+          return Array.from(
+            new Map(
+              combined.map((game) => [game.name.toLowerCase(), game])
+            ).values()
+          );
+        });
+      }
+
+      setTotalPages(totalPages);
+      setHasMore(page < totalPages);
     }
-  }, [page, selectedType, isSearchMode]);
+  }, [filteredData, selectedType, isSearchMode, page]);
+  // useEffect(() => {
+  //   if (!isSearchMode && selectedType !== "all") {
+  //     fetchFilteredGames(selectedType, page); // only for non-all types
+  //   }
+  // }, [page, selectedType, isSearchMode]);
 
+  useEffect(() => {
+    if (!allGamesData || selectedType !== "all" || isSearchMode) return;
+
+    const newGames = allGamesData.allGames || [];
+
+    // Fix: Set games immediately on page 1 even if not previously set
+    const combinedGames = page === 1 ? newGames : [...games, ...newGames];
+
+    const uniqueGames = Array.from(
+      new Map(combinedGames.map((game) => [game.uuid, game])).values()
+    );
+
+    setGames(uniqueGames);
+
+    const totalPages = allGamesData.pagination?.total_page || 1;
+    setTotalPages(totalPages);
+  }, [allGamesData, selectedType, isSearchMode, page]);
+  console.log({
+    selectedType,
+    isSearchMode,
+    isAllGamesLoading,
+    isAllGamesFetching,
+    allGamesFromAPI: allGamesData?.allGames?.length,
+    gamesLength: games.length,
+  });
+  // console.log("✅ Setting games from allGamesData", {
+  //   allGames: allGamesData.allGames,
+  //   selectedType,
+  //   isSearchMode,
+  //   page,
+  // });
+  // useEffect(() => {
+  //   fetchGames(); // This should setGames(...)
+  // }, []);
   useEffect(() => {
     const handleScroll = () => {
       const bottomReached =
@@ -111,38 +172,17 @@ const SearchTopGames = () => {
     const fetchProviders = async () => {
       try {
         const response = await axiosInstance.get(`/types-list`);
-        // const data = await response.json();
         const data = response.data;
         setTypes(data.types || []);
       } catch (error) {
         console.error("Error fetching providers:", error);
       }
     };
+
     fetchProviders();
     fetchAllGames();
+    // Do not call fetchAllGames here — React Query handles it.
   }, []);
-  // useEffect(() => {
-  //   const fixedSearchTerm = searchTerm.trim();
-
-  //   if (fixedSearchTerm.length < 3) {
-  //     setIsSearchMode(false);
-  //     setSearchByNameResults([]);
-  //     setSearchByProviderResults([]);
-  //     setSearchPage(1);
-  //     return;
-  //   }
-
-  //   // ✅ This line is MISSING
-  //   setIsSearchMode(true); // ← Make sure search mode is active
-
-  //   setSearchPage(1);
-
-  //   const delay = setTimeout(() => {
-  //     handleAutoSearch(fixedSearchTerm, 1); // always start with page 1
-  //   }, 500);
-
-  //   return () => clearTimeout(delay);
-  // }, [searchTerm]);
 
   useEffect(() => {
     const fixedSearchTerm = searchTerm.trim();
@@ -228,96 +268,96 @@ const SearchTopGames = () => {
       setLoading(false);
     }
   };
-  const fetchFilteredGames = async (type, page = 1) => {
-    try {
-      setLoading(true);
+  // const fetchFilteredGames = async (type, page = 1) => {
+  //   try {
+  //     setLoading(true);
 
-      let mergedGames = [];
+  //     let mergedGames = [];
 
-      let totalPagesFetched = 1;
+  //     let totalPagesFetched = 1;
 
-      if (type === "all") {
-        const res = await axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&page=${page}`
-        );
-        mergedGames = [...(res.data.allGames || [])];
+  //     if (type === "all") {
+  //       const res = await axios.get(
+  //         `${BASE_URL}/all-games?is_mobile=1&page=${page}`
+  //       );
+  //       mergedGames = [...(res.data.allGames || [])];
 
-        if (page === 1) {
-          // mergedGames = [...manualAllGames, ...mergedGames];
-          mergedGames = [...mergedGames];
-        }
+  //       if (page === 1) {
+  //         // mergedGames = [...manualAllGames, ...mergedGames];
+  //         mergedGames = [...mergedGames];
+  //       }
 
-        totalPagesFetched = res.data.pagination?.total_page || 1;
-      } else {
-        const [res2] = await Promise.all([
-          // axios.get(
-          //   `${BASE_URL}/all-games?is_mobile=1&global=${type}&page=${page}`
-          // ),
-          axios.get(
-            `${BASE_URL}/all-games?is_mobile=1&customType=${type}&page=${page}`
-          ),
-        ]);
+  //       totalPagesFetched = res.data.pagination?.total_page || 1;
+  //     } else {
+  //       const [res2] = await Promise.all([
+  //         // axios.get(
+  //         //   `${BASE_URL}/all-games?is_mobile=1&global=${type}&page=${page}`
+  //         // ),
+  //         axios.get(
+  //           `${BASE_URL}/all-games?is_mobile=1&customType=${type}&page=${page}`
+  //         ),
+  //       ]);
 
-        mergedGames = [
-          // ...(res1.data.allGames || []),
-          ...(res2.data.allGames || []),
-        ];
+  //       mergedGames = [
+  //         // ...(res1.data.allGames || []),
+  //         ...(res2.data.allGames || []),
+  //       ];
 
-        if (page === 1) {
-          if (type === "card")
-            // mergedGames = [...manualCardGames, ...mergedGames];
-            mergedGames = [...mergedGames];
-          if (type === "hot") mergedGames = [...mergedGames];
-          // mergedGames = [...manualHotGames, ...mergedGames];
-          if (type === "crash") mergedGames = [...mergedGames];
-          // mergedGames = [...manualCrashGames, ...mergedGames];
-          if (type === "table")
-            // mergedGames = [...manualTableGames, ...mergedGames];
-            mergedGames = [...mergedGames];
-          if (type === "dice")
-            // mergedGames = [...manualDiceGames, ...mergedGames];
-            mergedGames = [...mergedGames];
-          if (type === "blackjack")
-            // mergedGames = [...manualBlackJackGames, ...mergedGames];
-            mergedGames = [...mergedGames];
-        }
+  //       if (page === 1) {
+  //         if (type === "card")
+  //           // mergedGames = [...manualCardGames, ...mergedGames];
+  //           mergedGames = [...mergedGames];
+  //         if (type === "hot") mergedGames = [...mergedGames];
+  //         // mergedGames = [...manualHotGames, ...mergedGames];
+  //         if (type === "crash") mergedGames = [...mergedGames];
+  //         // mergedGames = [...manualCrashGames, ...mergedGames];
+  //         if (type === "table")
+  //           // mergedGames = [...manualTableGames, ...mergedGames];
+  //           mergedGames = [...mergedGames];
+  //         if (type === "dice")
+  //           // mergedGames = [...manualDiceGames, ...mergedGames];
+  //           mergedGames = [...mergedGames];
+  //         if (type === "blackjack")
+  //           // mergedGames = [...manualBlackJackGames, ...mergedGames];
+  //           mergedGames = [...mergedGames];
+  //       }
 
-        // 🟣 Use max from both responses to ensure pagination is handled properly
-        totalPagesFetched = Math.max(
-          // res1.data.pagination?.total_page || 1,
-          res2.data.pagination?.total_page || 1
-        );
+  //       // 🟣 Use max from both responses to ensure pagination is handled properly
+  //       totalPagesFetched = Math.max(
+  //         // res1.data.pagination?.total_page || 1,
+  //         res2.data.pagination?.total_page || 1
+  //       );
 
-        console.log("totalPagesFetched", totalPagesFetched);
-      }
+  //       console.log("totalPagesFetched", totalPagesFetched);
+  //     }
 
-      setTotalPages(totalPagesFetched);
-      setHasMore(page < totalPagesFetched); // ✅ FIX: Stop loading when last page is reached
+  //     setTotalPages(totalPagesFetched);
+  //     setHasMore(page < totalPagesFetched); // ✅ FIX: Stop loading when last page is reached
 
-      const uniqueGames = Array.from(
-        new Map(
-          mergedGames.map((game) => [game.name.toLowerCase(), game])
-        ).values()
-      );
+  //     const uniqueGames = Array.from(
+  //       new Map(
+  //         mergedGames.map((game) => [game.name.toLowerCase(), game])
+  //       ).values()
+  //     );
 
-      if (page === 1) {
-        setGames(uniqueGames);
-      } else {
-        setGames((prevGames) => {
-          const combined = [...prevGames, ...uniqueGames];
-          return Array.from(
-            new Map(
-              combined.map((game) => [game.name.toLowerCase(), game])
-            ).values()
-          );
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching games:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (page === 1) {
+  //       setGames(uniqueGames);
+  //     } else {
+  //       setGames((prevGames) => {
+  //         const combined = [...prevGames, ...uniqueGames];
+  //         return Array.from(
+  //           new Map(
+  //             combined.map((game) => [game.name.toLowerCase(), game])
+  //           ).values()
+  //         );
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching games:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleGameClick = async (game) => {
     if (!game.provider || !game.name || !game.uuid) {
@@ -633,46 +673,6 @@ const SearchTopGames = () => {
                       zIndex: 9999,
                     }}
                   >
-                    {/* <nav className="navbar px-2 py-3">
-              <div className="container-fluid p-0">
-                <div className="d-flex justify-content-between w-100 align-items-center">
-               
-                  <div className="d-flex align-items-center">
-                    <button
-                      className="btn text-white p-0 me-2"
-                     
-                    >
-                      <i className="fa-solid fa-arrow-left fs-5"></i>
-                    </button>
-                   
-                  </div>
-
-                 
-                  <div
-                    className="text-center"
-                    style={{ position: "absolute", left: 0, right: 0 }}
-                  >
-                    <div
-                      className="navbar-brand m-0 w-100"
-                      role="button"
-                      onClick={() => {
-                        navigate(-1);
-                      }}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <img
-                        src={Images.Favlogo}
-                        alt="favicon"
-                        width="100"
-                        className="mx-auto "
-                      />
-                    </div>
-                  </div>
-             
-                  <div style={{ width: "35px" }}></div>
-                </div>
-              </div>
-            </nav> */}
                     <iframe
                       ref={iframeRef}
                       src={selectedGameUrl}
@@ -689,15 +689,6 @@ const SearchTopGames = () => {
                         <button type="submit">
                           <i className="ri-search-2-line fs-18" />
                         </button>
-
-                        {/* <input
-                  type="text"
-                  placeholder="Search games..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="my-3 input"
-                /> */}
-
                         <input
                           type="text"
                           placeholder="Search games..."
@@ -707,17 +698,6 @@ const SearchTopGames = () => {
                           className="my-3 input"
                         />
                         {isSearchMode && (
-                          // <button
-                          //   type="button"
-                          //   className="reset"
-                          //   onClick={() => {
-                          //     setSearchTerm("");
-                          //     setSearchResults([]);
-                          //     setIsSearchMode(false);
-                          //   }}
-                          // >
-                          //   ❌
-                          // </button>
                           <button
                             type="button"
                             className="reset"
@@ -750,47 +730,6 @@ const SearchTopGames = () => {
                         onMouseLeave={handleMouseUp}
                         onMouseUp={handleMouseUp}
                       >
-                        {/* <ul className="nav my-2 bonus_filter d-flex flex-nowrap bg-transparent">
-                  <li className="nav-item">
-                    <button
-                      className={`nav-link bg-transparent ${
-                        selectedType === "all" ? "active" : ""
-                      }`}
-                      onClick={() => fetchFilteredGames("all")}
-                      style={{
-                        margin: "5px",
-                        padding: "10px",
-                        background: selectedType === "all" ? "blue" : "gray",
-                        color: "white",
-                        border: "none",
-                        cursor: "pointer",
-                      }}
-                    >
-                      All
-                    </button>
-                  </li>
-                  {types.map((item) => (
-                    <li key={item.id} className="nav-item">
-                      <button
-                        className={`nav-link bg-transparent ${
-                          selectedType === item.type ? "active" : ""
-                        }`}
-                        onClick={() => fetchFilteredGames(item.type)}
-                        style={{
-                          margin: "5px",
-                          padding: "10px",
-                          background:
-                            selectedType === item.type ? "blue" : "gray",
-                          color: "white",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {item.type}
-                      </button>
-                    </li>
-                  ))}
-                </ul> */}
                         <SkeletonTheme
                           baseColor="#313131"
                           highlightColor="#525252"
@@ -1083,22 +1022,6 @@ const SearchTopGames = () => {
                             white-space: nowrap;
                           }
                         `}</style>
-
-                        {/* <button
-                  className="nav-link btn-login w-75"
-                  onClick={() => fetchFilteredGames("all")}
-                  style={{
-                    margin: "5px",
-                    padding: "10px",
-                    background: "red",
-                    borderRadius:"10px",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  All
-                </button> */}
                       </div>
                     )}
 
@@ -1234,6 +1157,19 @@ const SearchTopGames = () => {
                       </>
                     ) : (
                       <>
+                        {/* {isAllGamesLoading ? (
+                          <p>Loading...</p>
+                        ) : games.length > 0 ? (
+                          <>
+                            <div className="row">
+                              {games.map((game, index) => (
+                                <div key={index}>{game.name}</div>
+                              ))}
+                            </div>
+                          </>
+                        ) : (
+                          <p>No games found</p>
+                        )} */}
                         <SkeletonTheme
                           baseColor="#313131"
                           highlightColor="#525252"
@@ -1241,7 +1177,7 @@ const SearchTopGames = () => {
                           <h5>Filtered Games</h5>
                           <div className="">
                             {loading && page === 1 ? (
-                              // Skeleton loading for first page
+                              // Skeleton loader for the first page
                               <div className="row">
                                 {Array.from({ length: 6 }).map((_, index) => (
                                   <div
@@ -1257,7 +1193,7 @@ const SearchTopGames = () => {
                                   </div>
                                 ))}
                               </div>
-                            ) : games.length > 0 ? (
+                            ) : (
                               <>
                                 <div className="row">
                                   {games.map((game, index) => (
@@ -1292,16 +1228,14 @@ const SearchTopGames = () => {
                                     </motion.div>
                                   ))}
                                 </div>
+
+                                {/* Show loading while fetching more */}
                                 {isFetching && (
                                   <p className="text-white text-center mt-3">
                                     Loading more games...
                                   </p>
                                 )}
                               </>
-                            ) : (
-                              <p className="text-white text-center">
-                                No games found.
-                              </p>
                             )}
                           </div>
                         </SkeletonTheme>
@@ -1319,6 +1253,42 @@ const SearchTopGames = () => {
                 )}
               </div>
 
+              {/* {games.map((game, index) => (
+                <motion.div
+                  className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                  key={game.uuid || game.name + index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.3,
+                    delay: index * 0.002,
+                  }}
+                >
+                  <div
+                    className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
+                    onClick={() => handleGameClick(game)}
+                  >
+                    <div className="game-card position-relative p-0 m-0 overflow-hidden">
+                      <img
+                        src={game.image || "/assets/img/placeholder.png"}
+                        className="w-100 m-0"
+                        alt={game.name}
+                      />
+                    </div>
+                    <div className="btn-play position-absolute top-50 start-50 translate-middle">
+                      <i className="fa-solid fa-play"></i>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+              {isAllGamesLoading || isAllGamesFetching ? (
+                // <LoadingSkeletonCard />
+                <h2>ddd</h2>
+              ) : games.length === 0 ? (
+                <p>No games found.</p>
+              ) : (
+                <h4>test</h4>
+              )} */}
               <div style={{ marginTop: "100px" }}></div>
               <Footer />
             </div>
